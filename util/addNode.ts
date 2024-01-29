@@ -7,13 +7,13 @@ export default function addNode(source, numb: number) {
       parentId: "graph",
       element: <SNode & TaskNode>{
         type: "node",
-        id: `node-0`,
+        id: `node-${numb}`,
         name: `node-${numb}`,
         selected: false,
         cssClasses: ["node"],
         position: { x: 100 * (numb - 1), y: 100 * (numb - 1) },
         size: { width: 100, height: 100 },
-      },
+      } ,
     },
   ]);
 }

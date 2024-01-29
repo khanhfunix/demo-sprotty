@@ -13614,7 +13614,7 @@
         }
       };
       exports.SConnectableElementImpl = SConnectableElementImpl;
-      var SRoutingHandleImpl = class extends smodel_1.SChildElementImpl {
+      var SRoutingHandleImpl2 = class extends smodel_1.SChildElementImpl {
         constructor() {
           super(...arguments);
           this.editMode = false;
@@ -13626,11 +13626,11 @@
          * default features
          */
         hasFeature(feature) {
-          return SRoutingHandleImpl.DEFAULT_FEATURES.indexOf(feature) !== -1;
+          return SRoutingHandleImpl2.DEFAULT_FEATURES.indexOf(feature) !== -1;
         }
       };
-      exports.SRoutingHandleImpl = SRoutingHandleImpl;
-      SRoutingHandleImpl.DEFAULT_FEATURES = [model_2.selectFeature, model_4.moveFeature, model_3.hoverFeedbackFeature];
+      exports.SRoutingHandleImpl = SRoutingHandleImpl2;
+      SRoutingHandleImpl2.DEFAULT_FEATURES = [model_2.selectFeature, model_4.moveFeature, model_3.hoverFeedbackFeature];
       var SDanglingAnchorImpl = class extends SConnectableElementImpl {
         constructor() {
           super();
@@ -21620,7 +21620,7 @@
       exports.PolylineEdgeView = PolylineEdgeView2 = __decorate([
         (0, inversify_1.injectable)()
       ], PolylineEdgeView2);
-      var JumpingPolylineEdgeView = class JumpingPolylineEdgeView extends PolylineEdgeView2 {
+      var JumpingPolylineEdgeView2 = class JumpingPolylineEdgeView extends PolylineEdgeView2 {
         constructor() {
           super(...arguments);
           this.jumpOffsetBefore = 5;
@@ -21743,11 +21743,11 @@
           return ` L ${anchorBefore.x},${anchorBefore.y} M ${anchorAfter.x},${anchorAfter.y}`;
         }
       };
-      exports.JumpingPolylineEdgeView = JumpingPolylineEdgeView;
-      exports.JumpingPolylineEdgeView = JumpingPolylineEdgeView = __decorate([
+      exports.JumpingPolylineEdgeView = JumpingPolylineEdgeView2;
+      exports.JumpingPolylineEdgeView = JumpingPolylineEdgeView2 = __decorate([
         (0, inversify_1.injectable)()
-      ], JumpingPolylineEdgeView);
-      var PolylineEdgeViewWithGapsOnIntersections = class PolylineEdgeViewWithGapsOnIntersections extends JumpingPolylineEdgeView {
+      ], JumpingPolylineEdgeView2);
+      var PolylineEdgeViewWithGapsOnIntersections = class PolylineEdgeViewWithGapsOnIntersections extends JumpingPolylineEdgeView2 {
         constructor() {
           super(...arguments);
           this.skipOffsetBefore = 3;
@@ -21829,7 +21829,7 @@
       exports.BezierCurveEdgeView = BezierCurveEdgeView = __decorate([
         (0, inversify_1.injectable)()
       ], BezierCurveEdgeView);
-      var SRoutingHandleView = class SRoutingHandleView {
+      var SRoutingHandleView2 = class SRoutingHandleView {
         constructor() {
           this.minimalPointDistance = 10;
         }
@@ -21852,14 +21852,14 @@
           return 7;
         }
       };
-      exports.SRoutingHandleView = SRoutingHandleView;
+      exports.SRoutingHandleView = SRoutingHandleView2;
       __decorate([
         (0, inversify_1.inject)(routing_1.EdgeRouterRegistry),
         __metadata("design:type", routing_1.EdgeRouterRegistry)
-      ], SRoutingHandleView.prototype, "edgeRouterRegistry", void 0);
-      exports.SRoutingHandleView = SRoutingHandleView = __decorate([
+      ], SRoutingHandleView2.prototype, "edgeRouterRegistry", void 0);
+      exports.SRoutingHandleView = SRoutingHandleView2 = __decorate([
         (0, inversify_1.injectable)()
-      ], SRoutingHandleView);
+      ], SRoutingHandleView2);
       var SLabelView = class SLabelView extends views_1.ShapeView {
         render(label, context) {
           if (!(0, model_1.isEdgeLayoutable)(label) && !this.isVisible(label, context)) {
@@ -21891,7 +21891,7 @@
       exports.SCompartmentView = SCompartmentView = __decorate([
         (0, inversify_1.injectable)()
       ], SCompartmentView);
-      var SBezierCreateHandleView = class SBezierCreateHandleView extends SRoutingHandleView {
+      var SBezierCreateHandleView = class SBezierCreateHandleView extends SRoutingHandleView2 {
         render(handle, context, args) {
           if (args) {
             const theRoute = args.route;
@@ -21921,7 +21921,7 @@
       exports.SBezierCreateHandleView = SBezierCreateHandleView = __decorate([
         (0, inversify_1.injectable)()
       ], SBezierCreateHandleView);
-      var SBezierControlHandleView = class SBezierControlHandleView extends SRoutingHandleView {
+      var SBezierControlHandleView = class SBezierControlHandleView extends SRoutingHandleView2 {
         render(handle, context, args) {
           if (args) {
             const theRoute = args.route;
@@ -23389,7 +23389,9 @@
       const context = { bind, unbind, isBound, rebind };
       (0, import_sprotty.configureModelElement)(context, "graph", import_sprotty.SGraphImpl, import_sprotty.SGraphView);
       (0, import_sprotty.configureModelElement)(context, "node", import_sprotty.SNodeImpl, TaskNodeView);
-      (0, import_sprotty.configureModelElement)(context, "edge", import_sprotty.SEdgeImpl, import_sprotty.PolylineEdgeView);
+      (0, import_sprotty.configureModelElement)(context, "edge:straight", import_sprotty.SEdgeImpl, import_sprotty.JumpingPolylineEdgeView);
+      (0, import_sprotty.configureModelElement)(context, "routing-point", import_sprotty.SRoutingHandleImpl, import_sprotty.SRoutingHandleView);
+      (0, import_sprotty.configureModelElement)(context, "volatile-routing-point", import_sprotty.SRoutingHandleImpl, import_sprotty.SRoutingHandleView);
       (0, import_sprotty.configureViewerOptions)(context, {
         needsClientLayout: false,
         baseDiv: containerId
@@ -23468,23 +23470,42 @@
     ]);
   }
 
+  // util/drawEdge.ts
+  function drawEdge(source, sourceNumb, targetNumb) {
+    source.addElements([
+      {
+        parentId: "graph",
+        element: {
+          type: "edge:straight",
+          id: `edge-between-node${sourceNumb}-to-node${targetNumb}`,
+          sourceId: `node-${sourceNumb}`,
+          targetId: `node-${targetNumb}`,
+          routerKind: "manhattan"
+        }
+      }
+    ]);
+  }
+
   // index.ts
   function run() {
     const addNodeBtn = document.getElementById("add-node");
     const drawEdgeBtn = document.getElementById("draw-edge");
     const deleteEdgeBtn = document.getElementById("delete-edge");
     const cancelBtn = document.getElementById("cancel");
-    const nodeElement = document.getElementsByClassName("sprotty-node");
+    const tipElement = document.querySelector(".tip-container");
     const container = createContainer("sprotty-container");
     const modelSource = container.get(import_sprotty2.TYPES.ModelSource);
     let nodeNumber = 1;
     let drawMode = false;
     let deleteMode = false;
+    let drawModeCounter = 0;
+    let drawModeSelectedArray = [-1, -1];
     function cancelDrawMode() {
       addNodeBtn.removeAttribute("disabled");
       drawEdgeBtn.classList.remove("btn-active");
       deleteEdgeBtn.removeAttribute("disabled");
       cancelBtn.classList.add("hide");
+      tipElement.classList.add("hide");
       drawMode = false;
     }
     function cancelDeleteMode() {
@@ -23494,11 +23515,36 @@
       cancelBtn.classList.add("hide");
       deleteMode = false;
     }
+    function focusGraph() {
+      const graphElement = document.getElementById("sprotty-container_graph");
+      if (graphElement !== null && typeof graphElement.focus === "function")
+        graphElement.focus();
+    }
     modelSource.setModel(graph);
     addNodeBtn.addEventListener("click", () => {
-      console.log(nodeElement);
       addNode(modelSource, nodeNumber);
       nodeNumber++;
+      setTimeout(() => {
+        document.querySelectorAll(".node")[nodeNumber - 2].addEventListener("click", (event) => {
+          if (drawMode) {
+            if (event.target instanceof Element) {
+              event.target.style.fill = "green";
+              drawModeSelectedArray[drawModeCounter] = Number(event.target.parentElement.id.slice(-1));
+              drawModeCounter++;
+            } else {
+              return;
+            }
+            if (drawModeCounter > 1) {
+              drawModeCounter = 0;
+              drawEdge(modelSource, drawModeSelectedArray[0], drawModeSelectedArray[1]);
+              document.querySelectorAll(".sprotty-node").forEach((e) => {
+                console.log(e);
+                e.removeAttribute("style");
+              });
+            }
+          }
+        });
+      }, 100);
     });
     drawEdgeBtn.addEventListener("click", () => {
       if (drawMode === false) {
@@ -23507,17 +23553,34 @@
         deleteEdgeBtn.setAttribute("disabled", "");
         cancelBtn.classList.remove("hide");
         drawMode = true;
+        tipElement.classList.remove("hide");
       } else {
         cancelDrawMode();
       }
     });
     deleteEdgeBtn.addEventListener("click", () => {
+      const edgeElements = document.querySelectorAll(".sprotty-edge");
       if (deleteMode === false) {
         addNodeBtn.setAttribute("disabled", "");
         drawEdgeBtn.setAttribute("disabled", "");
         deleteEdgeBtn.classList.add("btn-active");
         cancelBtn.classList.remove("hide");
         deleteMode = true;
+        edgeElements.forEach((element) => {
+          element.addEventListener("click", () => {
+            if (deleteMode === true) {
+              const elementId = element.id.replace("sprotty-container_", "");
+              if (window.confirm("Are you sure ???")) {
+                modelSource.removeElements([{
+                  elementId,
+                  parentId: "graph"
+                }]);
+                element.remove();
+              }
+            }
+          });
+        });
+        focusGraph();
       } else {
         cancelDeleteMode();
       }
@@ -23528,10 +23591,6 @@
       } else if (deleteMode === true) {
         cancelDeleteMode();
       }
-    });
-    nodeElement[0].addEventListener("click", (event) => {
-      console.log("clicked");
-      console.log(event.target);
     });
   }
   document.addEventListener("DOMContentLoaded", () => run());
