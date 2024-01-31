@@ -33,11 +33,3 @@
   stroke: none;
   fill: #224;
 }
-
-.selected > rect {
-  stroke-width: 3;
-}
-
-.mouseover {
-  stroke: #88f;
-}

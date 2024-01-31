@@ -5,7 +5,7 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.btn {
+/* .btn {
   background: rgb(59, 130, 246);
   color: #ffffff;
   font-weight: 700;
@@ -23,7 +23,7 @@
 .btn-active {
   cursor: pointer;
   background-color: rgb(4, 31, 105);
-}
+} */
 
 .btn:disabled,
 .btn[disabled] {
@@ -41,18 +41,13 @@
   justify-content: center;
 }
 
-.tip-container {
+/* .tip-container {
   display: flex;
   justify-content: center;
   margin-bottom: 30px;
-}
-
-/* .container {
-  width: 1000px;
-  height: 600px;
 } */
 
-.draw-tip,
+/* .draw-tip,
 .delete-tip {
   display: inline-block;
   margin: 0 auto;
@@ -63,59 +58,7 @@
   background-color: red;
   color: white;
   font-weight: bold;
-}
-
-.sprotty-graph,
-.sprotty {
-  display: flex;
-  justify-content: center;
-  margin: 0 auto;
-  width: 80%;
-  height: 80vh;
-}
-
-.sprotty-edge {
-  fill: none;
-  stroke: black;
-  stroke-width: 5px;
-}
-
-.sprotty-edge.selected {
-  stroke: red;
-}
-
-.sprotty-node.task {
-  fill: #c0e0fc;
-  stroke: #444;
-  stroke-width: 1;
-}
-
-.dummy > .task {
-  fill: black;
-}
-
-.dummy-edge {
-  fill: none;
-  stroke: #333;
-  stroke-width: 2px;
-}
-
-.sprotty-node.task:hover {
-  opacity: 70%;
-}
-
-.ready-draw > .task {
-  fill: #0f0;
-}
-
-text {
-  stroke-width: 0;
-  stroke: #000;
-  fill: #000;
-  font-family: sans-serif;
-  font-size: 10pt;
-  text-anchor: middle;
-}
+} */
 
 .hide {
   display: none;
