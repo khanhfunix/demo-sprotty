@@ -17,6 +17,10 @@ export default function run() {
 
   const defaultNodeWidth: number = 100;
   const defaultNodeHeight: number = 100;
+
+  let dummyEdgeArray = [];
+  let dummyNodeArray = [];
+
   let nodeNumber: number = 1;
   let drawMode: boolean = false;
   let deleteMode: boolean = false;
@@ -33,6 +37,22 @@ export default function run() {
     document.querySelectorAll(".sprotty-node").forEach((e) => {
       (e as HTMLElement).removeAttribute("style");
     });
+    modelSource.removeElements([
+      {
+        elementId: dummyNodeArray[0],
+        parentId: "graph",
+      },
+    ]);
+    modelSource.removeElements([
+      {
+        elementId: dummyEdgeArray[0],
+        parentId: "graph",
+      },
+    ]);
+    document
+      .getElementsByClassName("ready-draw")[0]
+      .classList.remove("ready-draw");
+    dummyEdgeArray = [];
     drawMode = false;
   }
 
@@ -85,9 +105,13 @@ export default function run() {
                 "",
                 ["nodes", "dummy"]
               );
+              dummyNodeArray.push("node-dummy");
               drawEdge(modelSource, drawModeSelectedArray[0], "dummy", [
                 "dummy-edge",
               ]);
+              dummyEdgeArray.push(
+                `edge-between-node${drawModeSelectedArray[0]}-to-nodedummy`
+              );
 
               setTimeout(() => {
                 const dummyElement = document.getElementById(
@@ -104,7 +128,7 @@ export default function run() {
                     .map((e) => {
                       return Number(e);
                     });
-                  console.log(dummyCoordinate);
+
                   const nodeElements = document.querySelectorAll(".node");
                   let nodeElementsArr = [];
                   nodeElements.forEach((node) => {
@@ -123,34 +147,45 @@ export default function run() {
                         : [0, 0],
                     });
                   });
-                  console.log(typeof dummyCoordinate[0]);
+
                   const filteredNode = nodeElementsArr.filter((node) => {
                     return (
-                      node.coordinate[0] <=
-                        dummyCoordinate[0] <=
+                      node.coordinate[0] <= dummyCoordinate[0] &&
+                      dummyCoordinate[0] <=
                         node.coordinate[0] + defaultNodeWidth &&
-                      node.coordinate[1] <=
-                        dummyCoordinate[1] <=
+                      node.coordinate[1] <= dummyCoordinate[1] &&
+                      dummyCoordinate[1] <=
                         node.coordinate[1] + defaultNodeHeight
                     );
                   });
-                  console.log(filteredNode);
+                  filteredNode.forEach((node) => {
+                    (
+                      document.getElementById(node.id) as HTMLElement
+                    ).classList.add("ready-draw");
+                    drawEdge(
+                      modelSource,
+                      drawModeSelectedArray[0],
+                      node.id.slice(-1)
+                    );
+                    cancelDrawMode();
+                    drawModeCounter = 0;
+                  });
                 });
               }, 100);
             } else {
               return;
             }
-            if (drawModeCounter > 1) {
-              drawModeCounter = 0;
-              drawEdge(
-                modelSource,
-                drawModeSelectedArray[0],
-                drawModeSelectedArray[1]
-              );
-              document.querySelectorAll(".sprotty-node").forEach((e) => {
-                (e as HTMLElement).removeAttribute("style");
-              });
-            }
+            // if (drawModeCounter > 1) {
+            //   drawModeCounter = 0;
+            //   drawEdge(
+            //     modelSource,
+            //     drawModeSelectedArray[0],
+            //     drawModeSelectedArray[1]
+            //   );
+            //   document.querySelectorAll(".sprotty-node").forEach((e) => {
+            //     (e as HTMLElement).removeAttribute("style");
+            //   });
+            // }
           }
         });
     }, 100);

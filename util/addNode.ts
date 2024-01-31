@@ -3,12 +3,12 @@ import { TaskNode } from "../models";
 
 export default function addNode(
   source: any,
-  numb: any,
+  id: any,
   width: number,
   height: number,
-  x: number = 100 * (numb - 1),
-  y: number = 100 * (numb - 1),
-  name: string = `node-${numb}`,
+  x: number = 100 * (id - 1),
+  y: number = 100 * (id - 1),
+  name: string = `node-${id}`,
   cssClasses = ["node"]
 ) {
   source.addElements([
@@ -16,7 +16,7 @@ export default function addNode(
       parentId: "graph",
       element: <SNode & TaskNode>{
         type: "node",
-        id: `node-${numb}`,
+        id: `node-${id}`,
         name,
         cssClasses,
         position: { x, y },

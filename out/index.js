@@ -23450,13 +23450,13 @@
   };
 
   // util/addNode.ts
-  function addNode(source, numb, width, height, x = 100 * (numb - 1), y = 100 * (numb - 1), name = `node-${numb}`, cssClasses = ["node"]) {
+  function addNode(source, id, width, height, x = 100 * (id - 1), y = 100 * (id - 1), name = `node-${id}`, cssClasses = ["node"]) {
     source.addElements([
       {
         parentId: "graph",
         element: {
           type: "node",
-          id: `node-${numb}`,
+          id: `node-${id}`,
           name,
           cssClasses,
           position: { x, y },
@@ -23467,7 +23467,7 @@
   }
 
   // util/drawEdge.ts
-  function drawEdge(source, sourceNumb, targetNumb, cssClasses = [], routerKind = "manhattan") {
+  function drawEdge(source, sourceNumb, targetNumb, cssClasses = [], routerKind = "") {
     source.addElements([
       {
         parentId: "graph",
@@ -23477,6 +23477,7 @@
           sourceId: `node-${sourceNumb}`,
           targetId: `node-${targetNumb}`,
           cssClasses
+          // routerKind: "manhatan",
         }
       }
     ]);
@@ -23493,6 +23494,8 @@
     const modelSource = container.get(import_sprotty2.TYPES.ModelSource);
     const defaultNodeWidth = 100;
     const defaultNodeHeight = 100;
+    let dummyEdgeArray = [];
+    let dummyNodeArray = [];
     let nodeNumber = 1;
     let drawMode = false;
     let deleteMode = false;
@@ -23507,6 +23510,20 @@
       document.querySelectorAll(".sprotty-node").forEach((e) => {
         e.removeAttribute("style");
       });
+      modelSource.removeElements([
+        {
+          elementId: dummyNodeArray[0],
+          parentId: "graph"
+        }
+      ]);
+      modelSource.removeElements([
+        {
+          elementId: dummyEdgeArray[0],
+          parentId: "graph"
+        }
+      ]);
+      document.getElementsByClassName("ready-draw")[0].classList.remove("ready-draw");
+      dummyEdgeArray = [];
       drawMode = false;
     }
     function cancelDeleteMode() {
@@ -23546,9 +23563,13 @@
                 "",
                 ["nodes", "dummy"]
               );
+              dummyNodeArray.push("node-dummy");
               drawEdge(modelSource, drawModeSelectedArray[0], "dummy", [
                 "dummy-edge"
               ]);
+              dummyEdgeArray.push(
+                `edge-between-node${drawModeSelectedArray[0]}-to-nodedummy`
+              );
               setTimeout(() => {
                 const dummyElement = document.getElementById(
                   "sprotty-container_node-dummy"
@@ -23557,7 +23578,6 @@
                   const dummyCoordinate = dummyElement.getAttribute("transform").replace("translate(", "").replace(")", "").trim().split(",").map((e) => {
                     return Number(e);
                   });
-                  console.log(dummyCoordinate);
                   const nodeElements = document.querySelectorAll(".node");
                   let nodeElementsArr = [];
                   nodeElements.forEach((node) => {
@@ -23568,26 +23588,23 @@
                       }) : [0, 0]
                     });
                   });
-                  console.log(typeof dummyCoordinate[0]);
                   const filteredNode = nodeElementsArr.filter((node) => {
-                    return node.coordinate[0] <= dummyCoordinate[0] <= node.coordinate[0] + defaultNodeWidth && node.coordinate[1] <= dummyCoordinate[1] <= node.coordinate[1] + defaultNodeHeight;
+                    return node.coordinate[0] <= dummyCoordinate[0] && dummyCoordinate[0] <= node.coordinate[0] + defaultNodeWidth && node.coordinate[1] <= dummyCoordinate[1] && dummyCoordinate[1] <= node.coordinate[1] + defaultNodeHeight;
                   });
-                  console.log(filteredNode);
+                  filteredNode.forEach((node) => {
+                    document.getElementById(node.id).classList.add("ready-draw");
+                    drawEdge(
+                      modelSource,
+                      drawModeSelectedArray[0],
+                      node.id.slice(-1)
+                    );
+                    cancelDrawMode();
+                    drawModeCounter = 0;
+                  });
                 });
               }, 100);
             } else {
               return;
-            }
-            if (drawModeCounter > 1) {
-              drawModeCounter = 0;
-              drawEdge(
-                modelSource,
-                drawModeSelectedArray[0],
-                drawModeSelectedArray[1]
-              );
-              document.querySelectorAll(".sprotty-node").forEach((e) => {
-                e.removeAttribute("style");
-              });
             }
           }
         });
