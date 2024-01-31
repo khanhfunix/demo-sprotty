@@ -17,6 +17,9 @@ import {
   viewportFeature,
   SRoutingHandleImpl,
   SRoutingHandleView,
+  BezierCurveEdgeView,
+  SBezierControlHandleView,
+  SBezierCreateHandleView,
 } from "sprotty";
 import { TaskNodeView } from "./views";
 import { CreatingOnDrag } from "sprotty";
@@ -26,12 +29,51 @@ export const createContainer = (containerId: string) => {
     bind(TYPES.ModelSource).to(LocalModelSource).inSingletonScope();
 
     const context = { bind, unbind, isBound, rebind };
-    configureModelElement(context, "graph", SGraphImpl, SGraphView,);
+    configureModelElement(context, "graph", SGraphImpl, SGraphView);
     // configureModelElement(context, "task", SNodeImpl, TaskNodeView);
     configureModelElement(context, "node", SNodeImpl, TaskNodeView);
-    configureModelElement(context, "edge:straight", SEdgeImpl, JumpingPolylineEdgeView,);
-    configureModelElement(context, 'routing-point', SRoutingHandleImpl, SRoutingHandleView);
-    configureModelElement(context, 'volatile-routing-point', SRoutingHandleImpl, SRoutingHandleView);
+    configureModelElement(
+      context,
+      "edge:straight",
+      SEdgeImpl,
+      PolylineEdgeView
+    );
+    configureModelElement(
+      context,
+      "edge:bezier",
+      SEdgeImpl,
+      BezierCurveEdgeView
+    );
+    configureModelElement(
+      context,
+      "routing-point",
+      SRoutingHandleImpl,
+      SRoutingHandleView
+    );
+    configureModelElement(
+      context,
+      "volatile-routing-point",
+      SRoutingHandleImpl,
+      SRoutingHandleView
+    );
+    configureModelElement(
+      context,
+      "bezier-create-routing-point",
+      SRoutingHandleImpl,
+      SBezierCreateHandleView
+    );
+    configureModelElement(
+      context,
+      "bezier-remove-routing-point",
+      SRoutingHandleImpl,
+      SBezierCreateHandleView
+    );
+    configureModelElement(
+      context,
+      "bezier-routing-point",
+      SRoutingHandleImpl,
+      SBezierControlHandleView
+    );
 
     configureViewerOptions(context, {
       needsClientLayout: false,

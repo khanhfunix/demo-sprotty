@@ -21769,7 +21769,7 @@
       exports.PolylineEdgeViewWithGapsOnIntersections = PolylineEdgeViewWithGapsOnIntersections = __decorate([
         (0, inversify_1.injectable)()
       ], PolylineEdgeViewWithGapsOnIntersections);
-      var BezierCurveEdgeView = class BezierCurveEdgeView extends views_2.RoutableView {
+      var BezierCurveEdgeView2 = class BezierCurveEdgeView extends views_2.RoutableView {
         render(edge, context, args) {
           const route = this.edgeRouterRegistry.route(edge, args);
           if (route.length === 0) {
@@ -21821,14 +21821,14 @@
           return (0, jsx_1.svg)("text", { "class-sprotty-edge-dangling": true, title: message }, "?");
         }
       };
-      exports.BezierCurveEdgeView = BezierCurveEdgeView;
+      exports.BezierCurveEdgeView = BezierCurveEdgeView2;
       __decorate([
         (0, inversify_1.inject)(routing_1.EdgeRouterRegistry),
         __metadata("design:type", routing_1.EdgeRouterRegistry)
-      ], BezierCurveEdgeView.prototype, "edgeRouterRegistry", void 0);
-      exports.BezierCurveEdgeView = BezierCurveEdgeView = __decorate([
+      ], BezierCurveEdgeView2.prototype, "edgeRouterRegistry", void 0);
+      exports.BezierCurveEdgeView = BezierCurveEdgeView2 = __decorate([
         (0, inversify_1.injectable)()
-      ], BezierCurveEdgeView);
+      ], BezierCurveEdgeView2);
       var SRoutingHandleView2 = class SRoutingHandleView {
         constructor() {
           this.minimalPointDistance = 10;
@@ -21891,7 +21891,7 @@
       exports.SCompartmentView = SCompartmentView = __decorate([
         (0, inversify_1.injectable)()
       ], SCompartmentView);
-      var SBezierCreateHandleView = class SBezierCreateHandleView extends SRoutingHandleView2 {
+      var SBezierCreateHandleView2 = class SBezierCreateHandleView extends SRoutingHandleView2 {
         render(handle, context, args) {
           if (args) {
             const theRoute = args.route;
@@ -21917,11 +21917,11 @@
           return (0, jsx_1.svg)("g", null);
         }
       };
-      exports.SBezierCreateHandleView = SBezierCreateHandleView;
-      exports.SBezierCreateHandleView = SBezierCreateHandleView = __decorate([
+      exports.SBezierCreateHandleView = SBezierCreateHandleView2;
+      exports.SBezierCreateHandleView = SBezierCreateHandleView2 = __decorate([
         (0, inversify_1.injectable)()
-      ], SBezierCreateHandleView);
-      var SBezierControlHandleView = class SBezierControlHandleView extends SRoutingHandleView2 {
+      ], SBezierCreateHandleView2);
+      var SBezierControlHandleView2 = class SBezierControlHandleView extends SRoutingHandleView2 {
         render(handle, context, args) {
           if (args) {
             const theRoute = args.route;
@@ -21961,10 +21961,10 @@
           return (0, jsx_1.svg)("g", null);
         }
       };
-      exports.SBezierControlHandleView = SBezierControlHandleView;
-      exports.SBezierControlHandleView = SBezierControlHandleView = __decorate([
+      exports.SBezierControlHandleView = SBezierControlHandleView2;
+      exports.SBezierControlHandleView = SBezierControlHandleView2 = __decorate([
         (0, inversify_1.injectable)()
-      ], SBezierControlHandleView);
+      ], SBezierControlHandleView2);
     }
   });
 
@@ -23389,9 +23389,48 @@
       const context = { bind, unbind, isBound, rebind };
       (0, import_sprotty.configureModelElement)(context, "graph", import_sprotty.SGraphImpl, import_sprotty.SGraphView);
       (0, import_sprotty.configureModelElement)(context, "node", import_sprotty.SNodeImpl, TaskNodeView);
-      (0, import_sprotty.configureModelElement)(context, "edge:straight", import_sprotty.SEdgeImpl, import_sprotty.JumpingPolylineEdgeView);
-      (0, import_sprotty.configureModelElement)(context, "routing-point", import_sprotty.SRoutingHandleImpl, import_sprotty.SRoutingHandleView);
-      (0, import_sprotty.configureModelElement)(context, "volatile-routing-point", import_sprotty.SRoutingHandleImpl, import_sprotty.SRoutingHandleView);
+      (0, import_sprotty.configureModelElement)(
+        context,
+        "edge:straight",
+        import_sprotty.SEdgeImpl,
+        import_sprotty.PolylineEdgeView
+      );
+      (0, import_sprotty.configureModelElement)(
+        context,
+        "edge:bezier",
+        import_sprotty.SEdgeImpl,
+        import_sprotty.BezierCurveEdgeView
+      );
+      (0, import_sprotty.configureModelElement)(
+        context,
+        "routing-point",
+        import_sprotty.SRoutingHandleImpl,
+        import_sprotty.SRoutingHandleView
+      );
+      (0, import_sprotty.configureModelElement)(
+        context,
+        "volatile-routing-point",
+        import_sprotty.SRoutingHandleImpl,
+        import_sprotty.SRoutingHandleView
+      );
+      (0, import_sprotty.configureModelElement)(
+        context,
+        "bezier-create-routing-point",
+        import_sprotty.SRoutingHandleImpl,
+        import_sprotty.SBezierCreateHandleView
+      );
+      (0, import_sprotty.configureModelElement)(
+        context,
+        "bezier-remove-routing-point",
+        import_sprotty.SRoutingHandleImpl,
+        import_sprotty.SBezierCreateHandleView
+      );
+      (0, import_sprotty.configureModelElement)(
+        context,
+        "bezier-routing-point",
+        import_sprotty.SRoutingHandleImpl,
+        import_sprotty.SBezierControlHandleView
+      );
       (0, import_sprotty.configureViewerOptions)(context, {
         needsClientLayout: false,
         baseDiv: containerId
@@ -23407,71 +23446,28 @@
   var graph = {
     type: "graph",
     id: "graph",
-    children: [
-      // <SNode & TaskNode>{
-      //   type: "task",
-      //   id: "task01",
-      //   name: "First Task",
-      //   isFinished: true,
-      //   isRunning: false,
-      //   position: { x: 0, y: 0 },
-      //   size: { width: 100, height: 200 },
-      // },
-      // <SNode & TaskNode>{
-      //   type: "task",
-      //   id: "task02",
-      //   name: "Second Task",
-      //   isFinished: false,
-      //   isRunning: true,
-      //   position: { x: 0, y: 200 },
-      //   size: { width: 100, height: 100 },
-      // },
-      // <SNode & TaskNode>{
-      //   type: "task",
-      //   id: "task03",
-      //   name: "Third Task",
-      //   isFinished: false,
-      //   isRunning: false,
-      //   position: { x: 150, y: 0 },
-      //   size: { width: 100, height: 100 },
-      // },
-      // <SEdge>{
-      //   type: "edge",
-      //   id: "edge01",
-      //   sourceId: "task01",
-      //   targetId: "task02",
-      //   routerKind: "manhattan",
-      // },
-      // <SEdge>{
-      //   type: "edge",
-      //   id: "edge02",
-      //   sourceId: "task02",
-      //   targetId: "task03",
-      //   routerKind: "manhattan",
-      // },
-    ]
+    children: []
   };
 
   // util/addNode.ts
-  function addNode(source, numb) {
+  function addNode(source, numb, width, height, x = 100 * (numb - 1), y = 100 * (numb - 1), name = `node-${numb}`, cssClasses = ["node"]) {
     source.addElements([
       {
         parentId: "graph",
         element: {
           type: "node",
           id: `node-${numb}`,
-          name: `node-${numb}`,
-          selected: false,
-          cssClasses: ["node"],
-          position: { x: 100 * (numb - 1), y: 100 * (numb - 1) },
-          size: { width: 100, height: 100 }
+          name,
+          cssClasses,
+          position: { x, y },
+          size: { width, height }
         }
       }
     ]);
   }
 
   // util/drawEdge.ts
-  function drawEdge(source, sourceNumb, targetNumb) {
+  function drawEdge(source, sourceNumb, targetNumb, cssClasses = [], routerKind = "manhattan") {
     source.addElements([
       {
         parentId: "graph",
@@ -23480,7 +23476,7 @@
           id: `edge-between-node${sourceNumb}-to-node${targetNumb}`,
           sourceId: `node-${sourceNumb}`,
           targetId: `node-${targetNumb}`,
-          routerKind: "manhattan"
+          cssClasses
         }
       }
     ]);
@@ -23495,6 +23491,8 @@
     const tipElement = document.querySelector(".tip-container");
     const container = createContainer("sprotty-container");
     const modelSource = container.get(import_sprotty2.TYPES.ModelSource);
+    const defaultNodeWidth = 100;
+    const defaultNodeHeight = 100;
     let nodeNumber = 1;
     let drawMode = false;
     let deleteMode = false;
@@ -23506,6 +23504,9 @@
       deleteEdgeBtn.removeAttribute("disabled");
       cancelBtn.classList.add("hide");
       tipElement.classList.add("hide");
+      document.querySelectorAll(".sprotty-node").forEach((e) => {
+        e.removeAttribute("style");
+      });
       drawMode = false;
     }
     function cancelDeleteMode() {
@@ -23522,23 +23523,69 @@
     }
     modelSource.setModel(graph);
     addNodeBtn.addEventListener("click", () => {
-      addNode(modelSource, nodeNumber);
+      addNode(modelSource, nodeNumber, defaultNodeWidth, defaultNodeHeight);
       nodeNumber++;
       setTimeout(() => {
         document.querySelectorAll(".node")[nodeNumber - 2].addEventListener("click", (event) => {
           if (drawMode) {
             if (event.target instanceof Element) {
-              event.target.style.fill = "green";
-              drawModeSelectedArray[drawModeCounter] = Number(event.target.parentElement.id.slice(-1));
+              event.target.style.fill = "#0f0";
+              drawModeSelectedArray[drawModeCounter] = Number(
+                event.target.parentElement.id.slice(-1)
+              );
+              const transformAttribute = event.target.parentElement.getAttribute("transform");
+              const coordinate = transformAttribute ? transformAttribute.replace("translate(", "").replace(")", "").trim().split(",") : [0, 0];
               drawModeCounter++;
+              addNode(
+                modelSource,
+                "dummy",
+                10,
+                10,
+                Number(coordinate[0]) + defaultNodeWidth + 10,
+                Number(coordinate[1]) + defaultNodeHeight / 2 - 5,
+                "",
+                ["nodes", "dummy"]
+              );
+              drawEdge(modelSource, drawModeSelectedArray[0], "dummy", [
+                "dummy-edge"
+              ]);
+              setTimeout(() => {
+                const dummyElement = document.getElementById(
+                  "sprotty-container_node-dummy"
+                );
+                dummyElement.addEventListener("mouseup", () => {
+                  const dummyCoordinate = dummyElement.getAttribute("transform").replace("translate(", "").replace(")", "").trim().split(",").map((e) => {
+                    return Number(e);
+                  });
+                  console.log(dummyCoordinate);
+                  const nodeElements = document.querySelectorAll(".node");
+                  let nodeElementsArr = [];
+                  nodeElements.forEach((node) => {
+                    nodeElementsArr.push({
+                      id: node.id,
+                      coordinate: node.getAttribute("transform") ? node.getAttribute("transform").replace("translate(", "").replace(")", "").trim().split(",").map((e) => {
+                        return Number(e);
+                      }) : [0, 0]
+                    });
+                  });
+                  console.log(typeof dummyCoordinate[0]);
+                  const filteredNode = nodeElementsArr.filter((node) => {
+                    return node.coordinate[0] <= dummyCoordinate[0] <= node.coordinate[0] + defaultNodeWidth && node.coordinate[1] <= dummyCoordinate[1] <= node.coordinate[1] + defaultNodeHeight;
+                  });
+                  console.log(filteredNode);
+                });
+              }, 100);
             } else {
               return;
             }
             if (drawModeCounter > 1) {
               drawModeCounter = 0;
-              drawEdge(modelSource, drawModeSelectedArray[0], drawModeSelectedArray[1]);
+              drawEdge(
+                modelSource,
+                drawModeSelectedArray[0],
+                drawModeSelectedArray[1]
+              );
               document.querySelectorAll(".sprotty-node").forEach((e) => {
-                console.log(e);
                 e.removeAttribute("style");
               });
             }
@@ -23569,12 +23616,17 @@
         edgeElements.forEach((element) => {
           element.addEventListener("click", () => {
             if (deleteMode === true) {
-              const elementId = element.id.replace("sprotty-container_", "");
+              const elementId = element.id.replace(
+                "sprotty-container_",
+                ""
+              );
               if (window.confirm("Are you sure ???")) {
-                modelSource.removeElements([{
-                  elementId,
-                  parentId: "graph"
-                }]);
+                modelSource.removeElements([
+                  {
+                    elementId,
+                    parentId: "graph"
+                  }
+                ]);
                 element.remove();
               }
             }
