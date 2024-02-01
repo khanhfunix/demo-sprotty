@@ -4,8 +4,7 @@ export default function drawEdge(
   source,
   sourceNumb,
   targetNumb,
-  cssClasses = [],
-  routerKind: string = ""
+  cssClasses = []
 ) {
   source.addElements([
     {
@@ -16,7 +15,7 @@ export default function drawEdge(
         sourceId: `node-${sourceNumb}`,
         targetId: `node-${targetNumb}`,
         cssClasses,
-        // routerKind: "manhatan",
+        routerKind: "manhattan",
       }) as SEdge,
     },
   ]);

@@ -54,7 +54,7 @@
 .sprotty-edge {
   fill: none;
   stroke: black;
-  stroke-width: 5px;
+  stroke-width: 3px;
 }
 
 .sprotty-edge.selected {

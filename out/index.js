@@ -23467,7 +23467,7 @@
   }
 
   // util/drawEdge.ts
-  function drawEdge(source, sourceNumb, targetNumb, cssClasses = [], routerKind = "") {
+  function drawEdge(source, sourceNumb, targetNumb, cssClasses = []) {
     source.addElements([
       {
         parentId: "graph",
@@ -23476,8 +23476,8 @@
           id: `edge-between-node${sourceNumb}-to-node${targetNumb}`,
           sourceId: `node-${sourceNumb}`,
           targetId: `node-${targetNumb}`,
-          cssClasses
-          // routerKind: "manhatan",
+          cssClasses,
+          routerKind: "manhattan"
         }
       }
     ]);
@@ -23498,9 +23498,7 @@
     let dummyNodeArray = [];
     let nodeNumber = 1;
     let drawMode = false;
-    let deleteMode = false;
-    let drawModeCounter = 0;
-    let drawModeSelectedArray = [-1, -1];
+    let dummyMode = false;
     function cancelDrawMode() {
       addNodeBtn.removeAttribute("disabled");
       drawEdgeBtn.classList.remove("btn-active");
@@ -23522,21 +23520,11 @@
           parentId: "graph"
         }
       ]);
-      document.getElementsByClassName("ready-draw")[0].classList.remove("ready-draw");
+      Array.from(document.getElementsByClassName("ready-draw")).forEach((e) => {
+        e.classList.remove("ready-draw");
+      });
       dummyEdgeArray = [];
       drawMode = false;
-    }
-    function cancelDeleteMode() {
-      addNodeBtn.removeAttribute("disabled");
-      drawEdgeBtn.removeAttribute("disabled");
-      deleteEdgeBtn.classList.remove("btn-active");
-      cancelBtn.classList.add("hide");
-      deleteMode = false;
-    }
-    function focusGraph() {
-      const graphElement = document.getElementById("sprotty-container_graph");
-      if (graphElement !== null && typeof graphElement.focus === "function")
-        graphElement.focus();
     }
     modelSource.setModel(graph);
     addNodeBtn.addEventListener("click", () => {
@@ -23544,32 +23532,35 @@
       nodeNumber++;
       setTimeout(() => {
         document.querySelectorAll(".node")[nodeNumber - 2].addEventListener("click", (event) => {
-          if (drawMode) {
+          if (drawMode && !dummyMode) {
             if (event.target instanceof Element) {
-              event.target.style.fill = "#0f0";
-              drawModeSelectedArray[drawModeCounter] = Number(
-                event.target.parentElement.id.slice(-1)
+              dummyMode = true;
+              event.target.parentElement.classList.add(
+                "ready-draw"
+              );
+              const sourceId = event.target.parentElement.id.replace(
+                "sprotty-container_node-",
+                ""
               );
               const transformAttribute = event.target.parentElement.getAttribute("transform");
               const coordinate = transformAttribute ? transformAttribute.replace("translate(", "").replace(")", "").trim().split(",") : [0, 0];
-              drawModeCounter++;
-              addNode(
-                modelSource,
-                "dummy",
-                10,
-                10,
-                Number(coordinate[0]) + defaultNodeWidth + 10,
-                Number(coordinate[1]) + defaultNodeHeight / 2 - 5,
-                "",
-                ["nodes", "dummy"]
-              );
-              dummyNodeArray.push("node-dummy");
-              drawEdge(modelSource, drawModeSelectedArray[0], "dummy", [
-                "dummy-edge"
-              ]);
-              dummyEdgeArray.push(
-                `edge-between-node${drawModeSelectedArray[0]}-to-nodedummy`
-              );
+              if (dummyMode) {
+                addNode(
+                  modelSource,
+                  "dummy",
+                  10,
+                  10,
+                  Number(coordinate[0]) + defaultNodeWidth + 10,
+                  Number(coordinate[1]) + defaultNodeHeight / 2 - 5,
+                  "",
+                  ["nodes", "dummy"]
+                );
+                dummyNodeArray.push("node-dummy");
+                drawEdge(modelSource, sourceId, "dummy", ["dummy-edge"]);
+                dummyEdgeArray.push(
+                  `edge-between-node${sourceId}-to-nodedummy`
+                );
+              }
               setTimeout(() => {
                 const dummyElement = document.getElementById(
                   "sprotty-container_node-dummy"
@@ -23593,13 +23584,9 @@
                   });
                   filteredNode.forEach((node) => {
                     document.getElementById(node.id).classList.add("ready-draw");
-                    drawEdge(
-                      modelSource,
-                      drawModeSelectedArray[0],
-                      node.id.slice(-1)
-                    );
+                    drawEdge(modelSource, sourceId, node.id.slice(-1));
+                    dummyMode = false;
                     cancelDrawMode();
-                    drawModeCounter = 0;
                   });
                 });
               }, 100);
@@ -23624,41 +23611,21 @@
     });
     deleteEdgeBtn.addEventListener("click", () => {
       const edgeElements = document.querySelectorAll(".sprotty-edge");
-      if (deleteMode === false) {
-        addNodeBtn.setAttribute("disabled", "");
-        drawEdgeBtn.setAttribute("disabled", "");
-        deleteEdgeBtn.classList.add("btn-active");
-        cancelBtn.classList.remove("hide");
-        deleteMode = true;
-        edgeElements.forEach((element) => {
-          element.addEventListener("click", () => {
-            if (deleteMode === true) {
-              const elementId = element.id.replace(
-                "sprotty-container_",
-                ""
-              );
-              if (window.confirm("Are you sure ???")) {
-                modelSource.removeElements([
-                  {
-                    elementId,
-                    parentId: "graph"
-                  }
-                ]);
-                element.remove();
-              }
-            }
-          });
-        });
-        focusGraph();
-      } else {
-        cancelDeleteMode();
-      }
+      const selectedEdgeElements = Array.from(edgeElements).filter((e) => {
+        return e.classList.contains("selected");
+      });
+      selectedEdgeElements.forEach((element) => {
+        modelSource.removeElements([
+          {
+            parentId: "graph",
+            elementId: element.id.replace("sprotty-container_", "")
+          }
+        ]);
+      });
     });
     cancelBtn.addEventListener("click", () => {
       if (drawMode === true) {
         cancelDrawMode();
-      } else if (deleteMode === true) {
-        cancelDeleteMode();
       }
     });
   }
