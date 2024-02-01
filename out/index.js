@@ -23500,6 +23500,7 @@
     let drawMode = false;
     let dummyMode = false;
     function cancelDrawMode() {
+      dummyMode = false;
       addNodeBtn.removeAttribute("disabled");
       drawEdgeBtn.classList.remove("btn-active");
       deleteEdgeBtn.removeAttribute("disabled");
@@ -23584,8 +23585,11 @@
                   });
                   filteredNode.forEach((node) => {
                     document.getElementById(node.id).classList.add("ready-draw");
-                    drawEdge(modelSource, sourceId, node.id.slice(-1));
-                    dummyMode = false;
+                    drawEdge(
+                      modelSource,
+                      sourceId,
+                      node.id.replace("sprotty-container_node-", "")
+                    );
                     cancelDrawMode();
                   });
                 });

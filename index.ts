@@ -152,7 +152,11 @@ export default function run() {
                     (
                       document.getElementById(node.id) as HTMLElement
                     ).classList.add("ready-draw");
-                    drawEdge(modelSource, sourceId, node.id.slice(-1));
+                    drawEdge(
+                      modelSource,
+                      sourceId,
+                      node.id.replace("sprotty-container_node-", "")
+                    );
 
                     cancelDrawMode();
                   });
