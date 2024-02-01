@@ -26,6 +26,7 @@ export default function run() {
   let dummyMode: boolean = false;
 
   function cancelDrawMode() {
+    dummyMode = false;
     addNodeBtn.removeAttribute("disabled");
     drawEdgeBtn.classList.remove("btn-active");
     deleteEdgeBtn.removeAttribute("disabled");
@@ -152,7 +153,7 @@ export default function run() {
                       document.getElementById(node.id) as HTMLElement
                     ).classList.add("ready-draw");
                     drawEdge(modelSource, sourceId, node.id.slice(-1));
-                    dummyMode = false;
+
                     cancelDrawMode();
                   });
                 });
