@@ -8570,10 +8570,10 @@
       "use strict";
       Object.defineProperty(exports, "__esModule", { value: true });
       exports.getAttrs = exports.on = exports.mergeStyle = exports.copyClassesFromElement = exports.copyClassesFromVNode = exports.setNamespace = exports.setClass = exports.setAttr = void 0;
-      function setAttr(vnode2, name, value) {
+      function setAttr2(vnode2, name, value) {
         getAttrs(vnode2)[name] = value;
       }
-      exports.setAttr = setAttr;
+      exports.setAttr = setAttr2;
       function setClass(vnode2, name, value) {
         getClass(vnode2)[name] = value;
       }
@@ -12109,7 +12109,7 @@
       var inversify_1 = require_inversify();
       var geometry_1 = require_geometry();
       var model_1 = require_model2();
-      var ShapeView = class ShapeView {
+      var ShapeView2 = class ShapeView {
         /**
          * Check whether the given model element is in the current viewport. Use this method
          * in your `render` implementation to skip rendering in case the element is not visible.
@@ -12127,10 +12127,10 @@
           return ab.x <= canvasBounds.width && ab.x + ab.width >= 0 && ab.y <= canvasBounds.height && ab.y + ab.height >= 0;
         }
       };
-      exports.ShapeView = ShapeView;
-      exports.ShapeView = ShapeView = __decorate([
+      exports.ShapeView = ShapeView2;
+      exports.ShapeView = ShapeView2 = __decorate([
         (0, inversify_1.injectable)()
-      ], ShapeView);
+      ], ShapeView2);
     }
   });
 
@@ -14066,7 +14066,7 @@
           this.opacity = 1;
         }
         canConnect(routable, role) {
-          return this.children.find((c) => c instanceof SPortImpl) === void 0;
+          return this.children.find((c) => c instanceof SPortImpl3) === void 0;
         }
         get incomingEdges() {
           const index = this.index;
@@ -14097,7 +14097,7 @@
         model_5.hoverFeedbackFeature,
         model_5.popupFeature
       ];
-      var SPortImpl = class extends model_7.SConnectableElementImpl {
+      var SPortImpl3 = class extends model_7.SConnectableElementImpl {
         constructor() {
           super(...arguments);
           this.selected = false;
@@ -14119,8 +14119,8 @@
           return super.outgoingEdges.filter((e) => e instanceof SEdgeImpl2);
         }
       };
-      exports.SPortImpl = SPortImpl;
-      SPortImpl.DEFAULT_FEATURES = [
+      exports.SPortImpl = SPortImpl3;
+      SPortImpl3.DEFAULT_FEATURES = [
         model_7.connectableFeature,
         model_8.selectFeature,
         model_1.boundsFeature,
@@ -14143,7 +14143,7 @@
         model_4.fadeFeature,
         model_5.hoverFeedbackFeature
       ];
-      var SLabelImpl = class extends model_1.SShapeElementImpl {
+      var SLabelImpl2 = class extends model_1.SShapeElementImpl {
         constructor() {
           super(...arguments);
           this.selected = false;
@@ -14151,8 +14151,8 @@
           this.opacity = 1;
         }
       };
-      exports.SLabelImpl = SLabelImpl;
-      SLabelImpl.DEFAULT_FEATURES = [
+      exports.SLabelImpl = SLabelImpl2;
+      SLabelImpl2.DEFAULT_FEATURES = [
         model_1.boundsFeature,
         model_1.alignFeature,
         model_1.layoutableChildFeature,
@@ -15396,7 +15396,7 @@
       exports.CircularNodeView = CircularNodeView = __decorate([
         (0, inversify_1.injectable)()
       ], CircularNodeView);
-      var RectangularNodeView = class RectangularNodeView extends views_1.ShapeView {
+      var RectangularNodeView2 = class RectangularNodeView extends views_1.ShapeView {
         render(node, context, args) {
           if (!this.isVisible(node, context)) {
             return void 0;
@@ -15409,10 +15409,10 @@
           );
         }
       };
-      exports.RectangularNodeView = RectangularNodeView;
-      exports.RectangularNodeView = RectangularNodeView = __decorate([
+      exports.RectangularNodeView = RectangularNodeView2;
+      exports.RectangularNodeView = RectangularNodeView2 = __decorate([
         (0, inversify_1.injectable)()
-      ], RectangularNodeView);
+      ], RectangularNodeView2);
       var DiamondNodeView = class DiamondNodeView extends views_1.ShapeView {
         render(node, context, args) {
           if (!this.isVisible(node, context)) {
@@ -21620,7 +21620,7 @@
       exports.PolylineEdgeView = PolylineEdgeView2 = __decorate([
         (0, inversify_1.injectable)()
       ], PolylineEdgeView2);
-      var JumpingPolylineEdgeView2 = class JumpingPolylineEdgeView extends PolylineEdgeView2 {
+      var JumpingPolylineEdgeView = class JumpingPolylineEdgeView extends PolylineEdgeView2 {
         constructor() {
           super(...arguments);
           this.jumpOffsetBefore = 5;
@@ -21743,11 +21743,11 @@
           return ` L ${anchorBefore.x},${anchorBefore.y} M ${anchorAfter.x},${anchorAfter.y}`;
         }
       };
-      exports.JumpingPolylineEdgeView = JumpingPolylineEdgeView2;
-      exports.JumpingPolylineEdgeView = JumpingPolylineEdgeView2 = __decorate([
+      exports.JumpingPolylineEdgeView = JumpingPolylineEdgeView;
+      exports.JumpingPolylineEdgeView = JumpingPolylineEdgeView = __decorate([
         (0, inversify_1.injectable)()
-      ], JumpingPolylineEdgeView2);
-      var PolylineEdgeViewWithGapsOnIntersections = class PolylineEdgeViewWithGapsOnIntersections extends JumpingPolylineEdgeView2 {
+      ], JumpingPolylineEdgeView);
+      var PolylineEdgeViewWithGapsOnIntersections = class PolylineEdgeViewWithGapsOnIntersections extends JumpingPolylineEdgeView {
         constructor() {
           super(...arguments);
           this.skipOffsetBefore = 3;
@@ -21860,7 +21860,7 @@
       exports.SRoutingHandleView = SRoutingHandleView2 = __decorate([
         (0, inversify_1.injectable)()
       ], SRoutingHandleView2);
-      var SLabelView = class SLabelView extends views_1.ShapeView {
+      var SLabelView2 = class SLabelView extends views_1.ShapeView {
         render(label, context) {
           if (!(0, model_1.isEdgeLayoutable)(label) && !this.isVisible(label, context)) {
             return void 0;
@@ -21873,10 +21873,10 @@
           return vnode2;
         }
       };
-      exports.SLabelView = SLabelView;
-      exports.SLabelView = SLabelView = __decorate([
+      exports.SLabelView = SLabelView2;
+      exports.SLabelView = SLabelView2 = __decorate([
         (0, inversify_1.injectable)()
-      ], SLabelView);
+      ], SLabelView2);
       var SCompartmentView = class SCompartmentView {
         render(compartment, context, args) {
           const translate = `translate(${compartment.bounds.x}, ${compartment.bounds.y})`;
@@ -23355,89 +23355,105 @@
 
   // index.ts
   var import_reflect_metadata = __toESM(require_Reflect());
-  var import_sprotty2 = __toESM(require_lib2());
+  var import_sprotty3 = __toESM(require_lib2());
 
   // di.config.ts
   var import_inversify2 = __toESM(require_inversify());
-  var import_sprotty = __toESM(require_lib2());
+  var import_sprotty2 = __toESM(require_lib2());
 
-  // views.tsx
+  // view/portView.tsx
   var import_jsx2 = __toESM(require_jsx());
   var import_inversify = __toESM(require_inversify());
-  var TaskNodeView = class {
+  var import_sprotty = __toESM(require_lib2());
+  var PortViewWithExternalLabel = class extends import_sprotty.ShapeView {
     render(node, context) {
-      const position = 50;
-      return /* @__PURE__ */ (0, import_jsx2.svg)("g", null, /* @__PURE__ */ (0, import_jsx2.svg)(
+      if (!this.isVisible(node, context)) {
+        return void 0;
+      }
+      const bboxElement = /* @__PURE__ */ (0, import_jsx2.svg)(
         "rect",
         {
-          "class-sprotty-node": true,
-          "class-task": true,
-          width: node.size.width,
-          height: node.size.height
+          "class-sprotty-port": true,
+          "class-mouseover": node.hoverFeedback,
+          "class-selected": node.selected,
+          x: "0",
+          y: "0",
+          width: Math.max(node.size.width, 0),
+          height: Math.max(node.size.height, 0)
         }
-      ), /* @__PURE__ */ (0, import_jsx2.svg)("text", { x: position, y: position + 5 }, node.name));
+      );
+      (0, import_sprotty.setAttr)(bboxElement, import_sprotty.ATTR_BBOX_ELEMENT, true);
+      return /* @__PURE__ */ (0, import_jsx2.svg)("g", null, bboxElement, context.renderChildren(node));
     }
   };
-  TaskNodeView = __decorateClass([
+  PortViewWithExternalLabel = __decorateClass([
     (0, import_inversify.injectable)()
-  ], TaskNodeView);
+  ], PortViewWithExternalLabel);
 
   // di.config.ts
   var createContainer = (containerId) => {
     const myModule = new import_inversify2.ContainerModule((bind, unbind, isBound, rebind) => {
-      bind(import_sprotty.TYPES.ModelSource).to(import_sprotty.LocalModelSource).inSingletonScope();
+      bind(import_sprotty2.TYPES.ModelSource).to(import_sprotty2.LocalModelSource).inSingletonScope();
       const context = { bind, unbind, isBound, rebind };
-      (0, import_sprotty.configureModelElement)(context, "graph", import_sprotty.SGraphImpl, import_sprotty.SGraphView);
-      (0, import_sprotty.configureModelElement)(context, "node", import_sprotty.SNodeImpl, TaskNodeView);
-      (0, import_sprotty.configureModelElement)(
+      (0, import_sprotty2.configureModelElement)(context, "graph", import_sprotty2.SGraphImpl, import_sprotty2.SGraphView);
+      (0, import_sprotty2.configureModelElement)(
+        context,
+        "port",
+        import_sprotty2.SPortImpl,
+        PortViewWithExternalLabel
+      );
+      (0, import_sprotty2.configureModelElement)(container, "label:port", import_sprotty2.SLabelImpl, import_sprotty2.SLabelView);
+      (0, import_sprotty2.configureModelElement)(container, "label:node", import_sprotty2.SLabelImpl, import_sprotty2.SLabelView);
+      (0, import_sprotty2.configureModelElement)(context, "node", import_sprotty2.SNodeImpl, import_sprotty2.RectangularNodeView);
+      (0, import_sprotty2.configureModelElement)(
         context,
         "edge:straight",
-        import_sprotty.SEdgeImpl,
-        import_sprotty.PolylineEdgeView
+        import_sprotty2.SEdgeImpl,
+        import_sprotty2.PolylineEdgeView
       );
-      (0, import_sprotty.configureModelElement)(
+      (0, import_sprotty2.configureModelElement)(
         context,
         "edge:bezier",
-        import_sprotty.SEdgeImpl,
-        import_sprotty.BezierCurveEdgeView
+        import_sprotty2.SEdgeImpl,
+        import_sprotty2.BezierCurveEdgeView
       );
-      (0, import_sprotty.configureModelElement)(
+      (0, import_sprotty2.configureModelElement)(
         context,
         "routing-point",
-        import_sprotty.SRoutingHandleImpl,
-        import_sprotty.SRoutingHandleView
+        import_sprotty2.SRoutingHandleImpl,
+        import_sprotty2.SRoutingHandleView
       );
-      (0, import_sprotty.configureModelElement)(
+      (0, import_sprotty2.configureModelElement)(
         context,
         "volatile-routing-point",
-        import_sprotty.SRoutingHandleImpl,
-        import_sprotty.SRoutingHandleView
+        import_sprotty2.SRoutingHandleImpl,
+        import_sprotty2.SRoutingHandleView
       );
-      (0, import_sprotty.configureModelElement)(
+      (0, import_sprotty2.configureModelElement)(
         context,
         "bezier-create-routing-point",
-        import_sprotty.SRoutingHandleImpl,
-        import_sprotty.SBezierCreateHandleView
+        import_sprotty2.SRoutingHandleImpl,
+        import_sprotty2.SBezierCreateHandleView
       );
-      (0, import_sprotty.configureModelElement)(
+      (0, import_sprotty2.configureModelElement)(
         context,
         "bezier-remove-routing-point",
-        import_sprotty.SRoutingHandleImpl,
-        import_sprotty.SBezierCreateHandleView
+        import_sprotty2.SRoutingHandleImpl,
+        import_sprotty2.SBezierCreateHandleView
       );
-      (0, import_sprotty.configureModelElement)(
+      (0, import_sprotty2.configureModelElement)(
         context,
         "bezier-routing-point",
-        import_sprotty.SRoutingHandleImpl,
-        import_sprotty.SBezierControlHandleView
+        import_sprotty2.SRoutingHandleImpl,
+        import_sprotty2.SBezierControlHandleView
       );
-      (0, import_sprotty.configureViewerOptions)(context, {
+      (0, import_sprotty2.configureViewerOptions)(context, {
         needsClientLayout: false,
         baseDiv: containerId
       });
     });
     const container = new import_inversify2.Container();
-    (0, import_sprotty.loadDefaultModules)(container);
+    (0, import_sprotty2.loadDefaultModules)(container);
     container.load(myModule);
     return container;
   };
@@ -23446,62 +23462,150 @@
   var graph = {
     type: "graph",
     id: "graph",
-    children: []
+    children: [
+      // <SNode>{
+      //   type: "node",
+      //   id: "node-1",
+      //   name: "node-1",
+      //   position: { x: nx, y: ny },
+      //   size: { width: nw, height: nh },
+      //   children: [
+      //     <SLabel>{
+      //       type: "label:node",
+      //       id: "label-1",
+      //       text: "abc",
+      //       position: { x: nx / 2, y: nw / 2 },
+      //     },
+      //     <SPort>{
+      //       type: "port",
+      //       id: "port-1",
+      //       size: { width: pw, height: ph },
+      //       position: { x: nw, y: nh / 2 - ph / 2 },
+      //     },
+      //     <SPort>{
+      //       type: "port",
+      //       id: "port-2",
+      //       size: { width: pw, height: ph },
+      //       position: { x: nw / 2 - pw / 2, y: nh },
+      //     },
+      //     <SPort>{
+      //       type: "port",
+      //       id: "port-3",
+      //       size: { width: pw, height: ph },
+      //       position: { x: 0 - pw, y: nh / 2 - ph / 2 },
+      //     },
+      //     <SPort>{
+      //       type: "port",
+      //       id: "port-4",
+      //       size: { width: pw, height: ph },
+      //       position: { x: nw / 2 - pw / 2, y: 0 - ph },
+      //     },
+      //   ],
+      // },
+    ]
   };
 
   // util/addNode.ts
-  function addNode(source, id, width, height, x = 100 * (id - 1), y = 100 * (id - 1), name = `node-${id}`, cssClasses = ["node"]) {
+  function addNode(source, nodeId, nodeWidth, nodeHeight, labelId, portQuantity, portWidth, portHeight, cssClasses = ["node"], name = `node-${nodeId}`, y = 100 * (nodeId - 1), x = 100 * (nodeId - 1)) {
+    let portArr = [];
+    let positionPortArr = [
+      { x: nodeWidth, y: nodeHeight / 2 - portHeight / 2 },
+      { x: nodeWidth / 2 - portWidth / 2, y: nodeHeight },
+      { x: 0 - portWidth, y: nodeHeight / 2 - portHeight / 2 },
+      { x: nodeWidth / 2 - portWidth / 2, y: 0 - portHeight }
+    ];
+    console.log(nodeId);
     source.addElements([
       {
         parentId: "graph",
         element: {
           type: "node",
-          id: `node-${id}`,
-          name,
+          id: `node-${nodeId}`,
           cssClasses,
           position: { x, y },
-          size: { width, height }
+          size: { width: nodeWidth, height: nodeHeight },
+          children: [
+            {
+              type: "label:node",
+              id: `label-${nodeId}-${labelId}`,
+              text: name,
+              position: { x: nodeWidth / 2, y: nodeHeight / 2 }
+            }
+            // <SPort>{
+            //   type: "port",
+            //   id: `port-1`,
+            //   size: { width: portWidth, height: portHeight },
+            //   position: positionPortArr[0],
+            // },
+            // <SPort>{
+            //   type: "port",
+            //   id: `port-2`,
+            //   size: { width: portWidth, height: portHeight },
+            //   position: positionPortArr[1],
+            // },
+            // <SPort>{
+            //   type: "port",
+            //   id: `port-3`,
+            //   size: { width: portWidth, height: portHeight },
+            //   position: positionPortArr[2],
+            // },
+            // <SPort>{
+            //   type: "port",
+            //   id: `port-4`,
+            //   size: { width: portWidth, height: portHeight },
+            //   position: positionPortArr[3],
+            // },
+            // [...portArr],
+          ]
         }
       }
     ]);
-  }
-
-  // util/drawEdge.ts
-  function drawEdge(source, sourceNumb, targetNumb, cssClasses = []) {
-    source.addElements([
-      {
-        parentId: "graph",
-        element: {
-          type: "edge:straight",
-          id: `edge-between-node${sourceNumb}-to-node${targetNumb}`,
-          sourceId: `node-${sourceNumb}`,
-          targetId: `node-${targetNumb}`,
-          cssClasses,
-          routerKind: "manhattan"
+    for (let i = 0; i < portQuantity; i++) {
+      source.addElements([
+        {
+          parentId: `node-${nodeId}`,
+          element: {
+            type: "port",
+            id: `port-${nodeId}-${i + 1}`,
+            size: { width: portWidth, height: portHeight },
+            position: positionPortArr[i]
+          }
         }
-      }
-    ]);
+      ]);
+    }
   }
 
   // index.ts
   function run() {
-    const addNodeBtn = document.getElementById("add-node");
+    const addNode1Btn = document.getElementById("add-node-1");
+    const addNode2Btn = document.getElementById("add-node-2");
+    const addNode3Btn = document.getElementById("add-node-3");
+    const addNode4Btn = document.getElementById("add-node-4");
     const drawEdgeBtn = document.getElementById("draw-edge");
     const deleteEdgeBtn = document.getElementById("delete-edge");
     const cancelBtn = document.getElementById("cancel");
     const tipElement = document.querySelector(".tip-container");
     const container = createContainer("sprotty-container");
-    const modelSource = container.get(import_sprotty2.TYPES.ModelSource);
+    const modelSource = container.get(import_sprotty3.TYPES.ModelSource);
     const defaultNodeWidth = 100;
     const defaultNodeHeight = 100;
+    const defaultPortWidth = 20;
+    const defaultPortHeight = 20;
     let dummyEdgeArray = [];
     let dummyNodeArray = [];
-    let nodeNumber = 1;
+    let node1Number = 1;
+    let node2Number = 1;
+    let node3Number = 1;
+    let node4Number = 1;
+    let label1Id = 1;
+    let label2Id = 1;
+    let label3Id = 1;
+    let label4Id = 1;
     let drawMode = false;
     let dummyMode = false;
     function cancelDrawMode() {
       dummyMode = false;
-      addNodeBtn.removeAttribute("disabled");
+      addNode1Btn.removeAttribute("disabled");
       drawEdgeBtn.classList.remove("btn-active");
       deleteEdgeBtn.removeAttribute("disabled");
       cancelBtn.classList.add("hide");
@@ -23528,82 +23632,70 @@
       drawMode = false;
     }
     modelSource.setModel(graph);
-    addNodeBtn.addEventListener("click", () => {
-      addNode(modelSource, nodeNumber, defaultNodeWidth, defaultNodeHeight);
-      nodeNumber++;
-      setTimeout(() => {
-        document.querySelectorAll(".node")[nodeNumber - 2].addEventListener("click", (event) => {
-          if (drawMode && !dummyMode) {
-            if (event.target instanceof Element) {
-              dummyMode = true;
-              event.target.parentElement.classList.add(
-                "ready-draw"
-              );
-              const sourceId = event.target.parentElement.id.replace(
-                "sprotty-container_node-",
-                ""
-              );
-              const transformAttribute = event.target.parentElement.getAttribute("transform");
-              const coordinate = transformAttribute ? transformAttribute.replace("translate(", "").replace(")", "").trim().split(",") : [0, 0];
-              if (dummyMode) {
-                addNode(
-                  modelSource,
-                  "dummy",
-                  10,
-                  10,
-                  Number(coordinate[0]) + defaultNodeWidth + 10,
-                  Number(coordinate[1]) + defaultNodeHeight / 2 - 5,
-                  "",
-                  ["nodes", "dummy"]
-                );
-                dummyNodeArray.push("node-dummy");
-                drawEdge(modelSource, sourceId, "dummy", ["dummy-edge"]);
-                dummyEdgeArray.push(
-                  `edge-between-node${sourceId}-to-nodedummy`
-                );
-              }
-              setTimeout(() => {
-                const dummyElement = document.getElementById(
-                  "sprotty-container_node-dummy"
-                );
-                dummyElement.addEventListener("mouseup", () => {
-                  const dummyCoordinate = dummyElement.getAttribute("transform").replace("translate(", "").replace(")", "").trim().split(",").map((e) => {
-                    return Number(e);
-                  });
-                  const nodeElements = document.querySelectorAll(".node");
-                  let nodeElementsArr = [];
-                  nodeElements.forEach((node) => {
-                    nodeElementsArr.push({
-                      id: node.id,
-                      coordinate: node.getAttribute("transform") ? node.getAttribute("transform").replace("translate(", "").replace(")", "").trim().split(",").map((e) => {
-                        return Number(e);
-                      }) : [0, 0]
-                    });
-                  });
-                  const filteredNode = nodeElementsArr.filter((node) => {
-                    return node.coordinate[0] <= dummyCoordinate[0] && dummyCoordinate[0] <= node.coordinate[0] + defaultNodeWidth && node.coordinate[1] <= dummyCoordinate[1] && dummyCoordinate[1] <= node.coordinate[1] + defaultNodeHeight;
-                  });
-                  filteredNode.forEach((node) => {
-                    document.getElementById(node.id).classList.add("ready-draw");
-                    drawEdge(
-                      modelSource,
-                      sourceId,
-                      node.id.replace("sprotty-container_node-", "")
-                    );
-                    cancelDrawMode();
-                  });
-                });
-              }, 100);
-            } else {
-              return;
-            }
-          }
-        });
-      }, 100);
+    addNode1Btn.addEventListener("click", () => {
+      addNode(
+        modelSource,
+        node1Number,
+        // `type-1-${node1Number}`,
+        defaultNodeWidth,
+        defaultNodeHeight,
+        label1Id,
+        1,
+        defaultPortWidth,
+        defaultPortHeight
+      );
+      node1Number++;
+      label1Id++;
+    });
+    addNode2Btn.addEventListener("click", () => {
+      addNode(
+        modelSource,
+        node2Number,
+        // `type-2-${node2Number}`,
+        defaultNodeWidth,
+        defaultNodeHeight,
+        label2Id,
+        2,
+        defaultPortWidth,
+        defaultPortHeight
+      );
+      node2Number++;
+      label2Id++;
+    });
+    addNode3Btn.addEventListener("click", () => {
+      console.log(graph.children);
+      addNode(
+        modelSource,
+        node3Number,
+        // `type-3-${node3Number}`,
+        defaultNodeWidth,
+        defaultNodeHeight,
+        label3Id,
+        3,
+        defaultPortWidth,
+        defaultPortHeight
+      );
+      node3Number++;
+      label3Id++;
+    });
+    addNode4Btn.addEventListener("click", () => {
+      addNode(
+        modelSource,
+        node4Number,
+        // `type-4-${node4Number}`,
+        defaultNodeWidth,
+        defaultNodeHeight,
+        label4Id,
+        4,
+        defaultPortWidth,
+        defaultPortHeight
+      );
+      node4Number++;
+      label4Id++;
     });
     drawEdgeBtn.addEventListener("click", () => {
       if (drawMode === false) {
-        addNodeBtn.setAttribute("disabled", "");
+        addNode1Btn.setAttribute("disabled", "");
         drawEdgeBtn.classList.add("btn-active");
         deleteEdgeBtn.setAttribute("disabled", "");
         cancelBtn.classList.remove("hide");

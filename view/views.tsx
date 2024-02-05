@@ -4,7 +4,7 @@ import { injectable } from "inversify";
 import { VNode } from "snabbdom";
 import { IView, RenderingContext, SNode } from "sprotty";
 
-import { TaskNode } from "./models";
+import { TaskNode } from "../models";
 
 @injectable()
 export class TaskNodeView implements IView {

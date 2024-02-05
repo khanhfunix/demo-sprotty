@@ -1,28 +1,28 @@
 import { Container, ContainerModule } from "inversify";
+
 import {
   configureModelElement,
   configureViewerOptions,
-  creatingOnDragFeature,
-  deletableFeature,
-  JumpingPolylineEdgeView,
   loadDefaultModules,
   LocalModelSource,
-  moveFeature,
   PolylineEdgeView,
+  RectangularNodeView,
   SEdgeImpl,
   SGraphImpl,
   SGraphView,
   SNodeImpl,
   TYPES,
-  viewportFeature,
+  SLabelView,
   SRoutingHandleImpl,
   SRoutingHandleView,
   BezierCurveEdgeView,
   SBezierControlHandleView,
   SBezierCreateHandleView,
+  SPortImpl,
+  SLabelImpl,
 } from "sprotty";
-import { TaskNodeView } from "./views";
-import { CreatingOnDrag } from "sprotty";
+
+import { PortViewWithExternalLabel } from "./view/portView";
 
 export const createContainer = (containerId: string) => {
   const myModule = new ContainerModule((bind, unbind, isBound, rebind) => {
@@ -30,8 +30,15 @@ export const createContainer = (containerId: string) => {
 
     const context = { bind, unbind, isBound, rebind };
     configureModelElement(context, "graph", SGraphImpl, SGraphView);
-    // configureModelElement(context, "task", SNodeImpl, TaskNodeView);
-    configureModelElement(context, "node", SNodeImpl, TaskNodeView);
+    configureModelElement(
+      context,
+      "port",
+      SPortImpl,
+      PortViewWithExternalLabel
+    );
+    configureModelElement(container, "label:port", SLabelImpl, SLabelView);
+    configureModelElement(container, "label:node", SLabelImpl, SLabelView);
+    configureModelElement(context, "node", SNodeImpl, RectangularNodeView);
     configureModelElement(
       context,
       "edge:straight",
