@@ -23506,7 +23506,9 @@
   };
 
   // util/addNode.ts
+  var idTime = Date.now();
   function addNode(source, nodeId, nodeWidth, nodeHeight, labelId, portQuantity, portWidth, portHeight, cssClasses = ["node"], name = `node-${nodeId}`, y = 100 * (nodeId - 1), x = 100 * (nodeId - 1)) {
+    idTime = Date.now();
     let portArr = [];
     let positionPortArr = [
       { x: nodeWidth, y: nodeHeight / 2 - portHeight / 2 },
@@ -23633,6 +23635,7 @@
     }
     modelSource.setModel(graph);
     addNode1Btn.addEventListener("click", () => {
+      let time = Date.now();
       addNode(
         modelSource,
         node1Number,
@@ -23648,6 +23651,7 @@
       label1Id++;
     });
     addNode2Btn.addEventListener("click", () => {
+      let time = Date.now();
       addNode(
         modelSource,
         node2Number,
@@ -23663,6 +23667,7 @@
       label2Id++;
     });
     addNode3Btn.addEventListener("click", () => {
+      let time = Date.now();
       console.log(graph.children);
       addNode(
         modelSource,
@@ -23679,6 +23684,7 @@
       label3Id++;
     });
     addNode4Btn.addEventListener("click", () => {
+      let time = Date.now();
       addNode(
         modelSource,
         node4Number,

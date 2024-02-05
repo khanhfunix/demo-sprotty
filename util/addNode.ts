@@ -1,4 +1,5 @@
 import { SNode, SLabel, SPort } from "sprotty-protocol";
+let idTime: number = Date.now();
 
 export default function addNode(
   source: any,
@@ -14,6 +15,7 @@ export default function addNode(
   y: number = 100 * (nodeId - 1),
   x: number = 100 * (nodeId - 1)
 ) {
+  idTime = Date.now();
   let portArr = [];
   let positionPortArr = [
     { x: nodeWidth, y: nodeHeight / 2 - portHeight / 2 },

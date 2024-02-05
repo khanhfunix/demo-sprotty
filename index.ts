@@ -195,6 +195,7 @@ export default function run() {
 
   // add node
   addNode1Btn.addEventListener("click", () => {
+    let time = Date.now();
     addNode(
       modelSource,
       node1Number,
@@ -212,6 +213,7 @@ export default function run() {
   });
 
   addNode2Btn.addEventListener("click", () => {
+    let time = Date.now();
     addNode(
       modelSource,
       node2Number,
@@ -228,6 +230,7 @@ export default function run() {
     // drawLogic();
   });
   addNode3Btn.addEventListener("click", () => {
+    let time = Date.now();
     console.log(graph.children);
     addNode(
       modelSource,
@@ -245,6 +248,7 @@ export default function run() {
     // drawLogic();
   });
   addNode4Btn.addEventListener("click", () => {
+    let time = Date.now();
     addNode(
       modelSource,
       node4Number,
