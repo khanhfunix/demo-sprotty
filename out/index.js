@@ -23603,6 +23603,9 @@
     function cancelDrawMode() {
       dummyMode = false;
       addNode1Btn.removeAttribute("disabled");
+      addNode2Btn.removeAttribute("disabled");
+      addNode3Btn.removeAttribute("disabled");
+      addNode4Btn.removeAttribute("disabled");
       drawEdgeBtn.classList.remove("btn-active");
       deleteEdgeBtn.removeAttribute("disabled");
       cancelBtn.classList.add("hide");
@@ -23655,6 +23658,7 @@
                   Number(coordinate[0]) + 1.5 * defaultNodeWidth,
                   Number(coordinate[1])
                 );
+                console.log(dummyEdgeArray);
                 dummyNodeArray.push("node-dummy");
                 drawEdge(modelSource, sourceId, "dummy-3", ["dummy-edge"]);
                 dummyEdgeArray.push(`edge-between-node${sourceId}-to-nodedummy`);
@@ -23695,15 +23699,18 @@
                       const portSelected = document.getElementById(portId);
                       portSelected.classList.add("ready-draw");
                       portSelected.addEventListener("click", (event) => {
-                        console.log(event.target.id);
+                        console.log(
+                          event.target.parentElement.id
+                        );
                         drawEdge(
                           modelSource,
                           sourceId,
-                          event.target.id.replace(
+                          event.target.parentElement.id.replace(
                             "sprotty-container_port-",
                             ""
                           )
                         );
+                        cancelDrawMode();
                       });
                     });
                   });
@@ -23780,6 +23787,9 @@
     drawEdgeBtn.addEventListener("click", () => {
       if (drawMode === false) {
         addNode1Btn.setAttribute("disabled", "");
+        addNode2Btn.setAttribute("disabled", "");
+        addNode3Btn.setAttribute("disabled", "");
+        addNode4Btn.setAttribute("disabled", "");
         drawEdgeBtn.classList.add("btn-active");
         deleteEdgeBtn.setAttribute("disabled", "");
         cancelBtn.classList.remove("hide");

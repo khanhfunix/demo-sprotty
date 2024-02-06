@@ -44,6 +44,9 @@ export default function run() {
   function cancelDrawMode() {
     dummyMode = false;
     addNode1Btn.removeAttribute("disabled");
+    addNode2Btn.removeAttribute("disabled");
+    addNode3Btn.removeAttribute("disabled");
+    addNode4Btn.removeAttribute("disabled");
     drawEdgeBtn.classList.remove("btn-active");
     deleteEdgeBtn.removeAttribute("disabled");
     cancelBtn.classList.add("hide");
@@ -106,6 +109,7 @@ export default function run() {
                 Number(coordinate[0]) + 1.5 * defaultNodeWidth,
                 Number(coordinate[1])
               );
+              console.log(dummyEdgeArray);
               dummyNodeArray.push("node-dummy");
               drawEdge(modelSource, sourceId, "dummy-3", ["dummy-edge"]);
               dummyEdgeArray.push(`edge-between-node${sourceId}-to-nodedummy`);
@@ -172,28 +176,21 @@ export default function run() {
                     const portSelected = document.getElementById(portId);
                     portSelected.classList.add("ready-draw");
                     portSelected.addEventListener("click", (event) => {
+                      console.log(
+                        (event.target as HTMLElement).parentElement.id
+                      );
                       drawEdge(
                         modelSource,
                         sourceId,
-                        (event.target as HTMLElement).id.replace(
+                        (event.target as HTMLElement).parentElement.id.replace(
                           "sprotty-container_port-",
                           ""
                         )
                       );
+
+                      cancelDrawMode();
                     });
                   });
-                  // filteredNode.forEach((node) => {
-                  //   (
-                  //     document.getElementById(node.id) as HTMLElement
-                  //   ).classList.add("ready-draw");
-                  //   drawEdge(
-                  //     modelSource,
-                  //     sourceId,
-                  //     node.id.replace("sprotty-container_node-", "")
-                  //   );
-
-                  //   cancelDrawMode();
-                  // });
                 });
               }, 100);
             } else {
@@ -276,6 +273,9 @@ export default function run() {
   drawEdgeBtn.addEventListener("click", () => {
     if (drawMode === false) {
       addNode1Btn.setAttribute("disabled", "");
+      addNode2Btn.setAttribute("disabled", "");
+      addNode3Btn.setAttribute("disabled", "");
+      addNode4Btn.setAttribute("disabled", "");
       drawEdgeBtn.classList.add("btn-active");
       deleteEdgeBtn.setAttribute("disabled", "");
       cancelBtn.classList.remove("hide");
