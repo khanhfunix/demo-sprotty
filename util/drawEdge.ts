@@ -12,8 +12,8 @@ export default function drawEdge(
       element: (<SEdge>{
         type: "edge:straight",
         id: `edge-between-node${sourceNumb}-to-node${targetNumb}`,
-        sourceId: `node-${sourceNumb}`,
-        targetId: `node-${targetNumb}`,
+        sourceId: `port-${sourceNumb}`,
+        targetId: `port-${targetNumb}`,
         cssClasses,
         routerKind: "manhattan",
       }) as SEdge,

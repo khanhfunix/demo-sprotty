@@ -1,5 +1,4 @@
 import { SNode, SLabel, SPort } from "sprotty-protocol";
-let idTime: number = Date.now();
 
 export default function addNode(
   source: any,
@@ -12,10 +11,9 @@ export default function addNode(
   portHeight,
   cssClasses = ["node"],
   name: string = `node-${nodeId}`,
-  y: number = 100 * (nodeId - 1),
-  x: number = 100 * (nodeId - 1)
+  x = Math.floor(Math.random() * 500),
+  y = Math.floor(Math.random() * 500)
 ) {
-  idTime = Date.now();
   let portArr = [];
   let positionPortArr = [
     { x: nodeWidth, y: nodeHeight / 2 - portHeight / 2 },
@@ -23,7 +21,7 @@ export default function addNode(
     { x: 0 - portWidth, y: nodeHeight / 2 - portHeight / 2 },
     { x: nodeWidth / 2 - portWidth / 2, y: 0 - portHeight },
   ];
-  console.log(nodeId);
+
   source.addElements([
     {
       parentId: "graph",
@@ -32,7 +30,10 @@ export default function addNode(
 
         id: `node-${nodeId}`,
         cssClasses,
-        position: { x, y },
+        position: {
+          x,
+          y,
+        },
         size: { width: nodeWidth, height: nodeHeight },
         children: [
           <SLabel>{
@@ -41,32 +42,6 @@ export default function addNode(
             text: name,
             position: { x: nodeWidth / 2, y: nodeHeight / 2 },
           },
-
-          // <SPort>{
-          //   type: "port",
-          //   id: `port-1`,
-          //   size: { width: portWidth, height: portHeight },
-          //   position: positionPortArr[0],
-          // },
-          // <SPort>{
-          //   type: "port",
-          //   id: `port-2`,
-          //   size: { width: portWidth, height: portHeight },
-          //   position: positionPortArr[1],
-          // },
-          // <SPort>{
-          //   type: "port",
-          //   id: `port-3`,
-          //   size: { width: portWidth, height: portHeight },
-          //   position: positionPortArr[2],
-          // },
-          // <SPort>{
-          //   type: "port",
-          //   id: `port-4`,
-          //   size: { width: portWidth, height: portHeight },
-          //   position: positionPortArr[3],
-          // },
-          // [...portArr],
         ],
       },
     },
@@ -80,6 +55,7 @@ export default function addNode(
           id: `port-${nodeId}-${i + 1}`,
           size: { width: portWidth, height: portHeight },
           position: positionPortArr[i],
+          cssClasses: ["port"],
         },
       },
     ]);

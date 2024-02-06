@@ -22,6 +22,8 @@ export default function run() {
   const defaultNodeHeight: number = 100;
   const defaultPortWidth: number = 20;
   const defaultPortHeight: number = 20;
+  const defaultDummyWidth: number = 10;
+  const defaultDummyHeight: number = 10;
 
   let dummyEdgeArray = [];
   let dummyNodeArray = [];
@@ -71,135 +73,144 @@ export default function run() {
 
   modelSource.setModel(graph);
 
-  // const drawLogic = () => {
-  //   setTimeout(() => {
-  //     document
-  //       .querySelectorAll(".node")
-  //       [nodeNumber - 2].addEventListener("click", (event) => {
-  //         if (drawMode && !dummyMode) {
-  //           if (event.target instanceof Element) {
-  //             dummyMode = true;
-  //             (event.target as HTMLElement).parentElement.classList.add(
-  //               "ready-draw"
-  //             );
-  //             const sourceId = event.target.parentElement.id.replace(
-  //               "sprotty-container_node-",
-  //               ""
-  //             );
+  const drawLogic = () => {
+    setTimeout(() => {
+      document.querySelectorAll(".port").forEach((port) => {
+        port.addEventListener("click", () => {
+          if (drawMode && !dummyMode) {
+            dummyMode = true;
+            port.classList.add("ready-draw");
+            const sourceId = port.id.replace("sprotty-container_port-", "");
+            const transformAttribute =
+              port.parentElement.getAttribute("transform");
+            const coordinate = transformAttribute
+              ? transformAttribute
+                  .replace("translate(", "")
+                  .replace(")", "")
+                  .trim()
+                  .split(",")
+              : [0, 0];
+            console.log(sourceId);
+            if (dummyMode) {
+              addNode(
+                modelSource,
+                "dummy",
+                defaultDummyWidth,
+                defaultDummyHeight,
+                "dummy",
+                4,
+                2,
+                2,
+                ["nodes", "dummy"],
+                "",
+                Number(coordinate[0]) + 1.5 * defaultNodeWidth,
+                Number(coordinate[1])
+              );
+              dummyNodeArray.push("node-dummy");
+              drawEdge(modelSource, sourceId, "dummy-3", ["dummy-edge"]);
+              dummyEdgeArray.push(`edge-between-node${sourceId}-to-nodedummy`);
+              setTimeout(() => {
+                const dummyElement = document.getElementById(
+                  "sprotty-container_node-dummy"
+                );
 
-  //             const transformAttribute =
-  //               event.target.parentElement.getAttribute("transform");
-  //             const coordinate = transformAttribute
-  //               ? transformAttribute
-  //                   .replace("translate(", "")
-  //                   .replace(")", "")
-  //                   .trim()
-  //                   .split(",")
-  //               : [0, 0];
+                dummyElement.addEventListener("mouseup", () => {
+                  const dummyCoordinate = dummyElement
+                    .getAttribute("transform")
+                    .replace("translate(", "")
+                    .replace(")", "")
+                    .trim()
+                    .split(",")
+                    .map((e) => {
+                      return Number(e);
+                    });
+                  console.log("toa do dummy", dummyCoordinate);
 
-  //             if (dummyMode) {
-  //               addNode(
-  //                 modelSource,
-  //                 "dummy",
-  //                 10,
-  //                 10,
-  //                 Number(coordinate[0]) + defaultNodeWidth + 10,
-  //                 Number(coordinate[1]) + defaultNodeHeight / 2 - 5,
-  //                 "",
-  //                 ["nodes", "dummy"]
-  //               );
-  //               dummyNodeArray.push("node-dummy");
-  //               drawEdge(modelSource, sourceId, "dummy", ["dummy-edge"]);
-  //               dummyEdgeArray.push(
-  //                 `edge-between-node${sourceId}-to-nodedummy`
-  //               );
-  //             }
+                  const nodeElements = document.querySelectorAll(".node");
+                  let nodeElementsArr = [];
+                  nodeElements.forEach((node) => {
+                    nodeElementsArr.push({
+                      id: node.id.replace("sprotty-container_node-", ""),
+                      coordinate: node.getAttribute("transform")
+                        ? node
+                            .getAttribute("transform")
+                            .replace("translate(", "")
+                            .replace(")", "")
+                            .trim()
+                            .split(",")
+                            .map((e) => {
+                              return Number(e);
+                            })
+                        : [0, 0],
+                    });
+                  });
 
-  //             setTimeout(() => {
-  //               const dummyElement = document.getElementById(
-  //                 "sprotty-container_node-dummy"
-  //               );
+                  const filteredNode = nodeElementsArr.filter((node) => {
+                    return (
+                      node.coordinate[0] <= dummyCoordinate[0] &&
+                      dummyCoordinate[0] <=
+                        node.coordinate[0] + defaultNodeWidth &&
+                      node.coordinate[1] <= dummyCoordinate[1] &&
+                      dummyCoordinate[1] <=
+                        node.coordinate[1] + defaultNodeHeight
+                    );
+                  });
+                  console.log("node filter", filteredNode);
+                  const idPortArr = [];
+                  const portElements = document.querySelectorAll(".port");
+                  portElements.forEach((port) => {
+                    idPortArr.push(
+                      port.id.replace("sprotty-container_node-", "")
+                    );
+                  });
 
-  //               dummyElement.addEventListener("mouseup", () => {
-  //                 const dummyCoordinate = dummyElement
-  //                   .getAttribute("transform")
-  //                   .replace("translate(", "")
-  //                   .replace(")", "")
-  //                   .trim()
-  //                   .split(",")
-  //                   .map((e) => {
-  //                     return Number(e);
-  //                   });
+                  const idPortArrFiltered = idPortArr.filter((id) => {
+                    return id.includes(filteredNode[0].id);
+                  });
 
-  //                 const nodeElements = document.querySelectorAll(".node");
-  //                 let nodeElementsArr = [];
-  //                 nodeElements.forEach((node) => {
-  //                   nodeElementsArr.push({
-  //                     id: node.id,
-  //                     coordinate: node.getAttribute("transform")
-  //                       ? node
-  //                           .getAttribute("transform")
-  //                           .replace("translate(", "")
-  //                           .replace(")", "")
-  //                           .trim()
-  //                           .split(",")
-  //                           .map((e) => {
-  //                             return Number(e);
-  //                           })
-  //                       : [0, 0],
-  //                   });
-  //                 });
+                  idPortArrFiltered.forEach((portId) => {
+                    const portSelected = document.getElementById(portId);
+                    portSelected.classList.add("ready-draw");
+                    portSelected.addEventListener("click", (event) => {
+                      drawEdge(
+                        modelSource,
+                        sourceId,
+                        (event.target as HTMLElement).id.replace(
+                          "sprotty-container_port-",
+                          ""
+                        )
+                      );
+                    });
+                  });
+                  // filteredNode.forEach((node) => {
+                  //   (
+                  //     document.getElementById(node.id) as HTMLElement
+                  //   ).classList.add("ready-draw");
+                  //   drawEdge(
+                  //     modelSource,
+                  //     sourceId,
+                  //     node.id.replace("sprotty-container_node-", "")
+                  //   );
 
-  //                 const filteredNode = nodeElementsArr.filter((node) => {
-  //                   return (
-  //                     node.coordinate[0] <= dummyCoordinate[0] &&
-  //                     dummyCoordinate[0] <=
-  //                       node.coordinate[0] + defaultNodeWidth &&
-  //                     node.coordinate[1] <= dummyCoordinate[1] &&
-  //                     dummyCoordinate[1] <=
-  //                       node.coordinate[1] + defaultNodeHeight
-  //                   );
-  //                 });
-  //                 filteredNode.forEach((node) => {
-  //                   (
-  //                     document.getElementById(node.id) as HTMLElement
-  //                   ).classList.add("ready-draw");
-  //                   drawEdge(
-  //                     modelSource,
-  //                     sourceId,
-  //                     node.id.replace("sprotty-container_node-", "")
-  //                   );
-
-  //                   cancelDrawMode();
-  //                 });
-  //               });
-  //             }, 100);
-  //           } else {
-  //             return;
-  //           }
-  //           // if (drawModeCounter > 1) {
-  //           //   drawModeCounter = 0;
-  //           //   drawEdge(
-  //           //     modelSource,
-  //           //     drawModeSelectedArray[0],
-  //           //     drawModeSelectedArray[1]
-  //           //   );
-  //           //   document.querySelectorAll(".sprotty-node").forEach((e) => {
-  //           //     (e as HTMLElement).removeAttribute("style");
-  //           //   });
-  //           // }
-  //         }
-  //       });
-  //   }, 100);
-  // };
+                  //   cancelDrawMode();
+                  // });
+                });
+              }, 100);
+            } else {
+              return;
+            }
+          }
+        });
+      });
+    }, 100);
+  };
 
   // add node
   addNode1Btn.addEventListener("click", () => {
-    let time = Date.now();
     addNode(
       modelSource,
-      node1Number,
-      // `type-1-${node1Number}`,
+
+      `type-1-${node1Number}`,
       defaultNodeWidth,
       defaultNodeHeight,
       label1Id,
@@ -209,15 +220,14 @@ export default function run() {
     );
     node1Number++;
     label1Id++;
-    // drawLogic();
+    drawLogic();
   });
 
   addNode2Btn.addEventListener("click", () => {
-    let time = Date.now();
     addNode(
       modelSource,
-      node2Number,
-      // `type-2-${node2Number}`,
+
+      `type-2-${node2Number}`,
       defaultNodeWidth,
       defaultNodeHeight,
       label2Id,
@@ -227,15 +237,14 @@ export default function run() {
     );
     node2Number++;
     label2Id++;
-    // drawLogic();
+    drawLogic();
   });
   addNode3Btn.addEventListener("click", () => {
-    let time = Date.now();
     console.log(graph.children);
     addNode(
       modelSource,
-      node3Number,
-      // `type-3-${node3Number}`,
+
+      `type-3-${node3Number}`,
       defaultNodeWidth,
       defaultNodeHeight,
       label3Id,
@@ -245,14 +254,13 @@ export default function run() {
     );
     node3Number++;
     label3Id++;
-    // drawLogic();
+    drawLogic();
   });
   addNode4Btn.addEventListener("click", () => {
-    let time = Date.now();
     addNode(
       modelSource,
-      node4Number,
-      // `type-4-${node4Number}`,
+
+      `type-4-${node4Number}`,
       defaultNodeWidth,
       defaultNodeHeight,
       label4Id,
@@ -262,7 +270,7 @@ export default function run() {
     );
     node4Number++;
     label4Id++;
-    // drawLogic();
+    drawLogic();
   });
   // draw mode
   drawEdgeBtn.addEventListener("click", () => {

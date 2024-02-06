@@ -23506,9 +23506,7 @@
   };
 
   // util/addNode.ts
-  var idTime = Date.now();
-  function addNode(source, nodeId, nodeWidth, nodeHeight, labelId, portQuantity, portWidth, portHeight, cssClasses = ["node"], name = `node-${nodeId}`, y = 100 * (nodeId - 1), x = 100 * (nodeId - 1)) {
-    idTime = Date.now();
+  function addNode(source, nodeId, nodeWidth, nodeHeight, labelId, portQuantity, portWidth, portHeight, cssClasses = ["node"], name = `node-${nodeId}`, x = Math.floor(Math.random() * 500), y = Math.floor(Math.random() * 500)) {
     let portArr = [];
     let positionPortArr = [
       { x: nodeWidth, y: nodeHeight / 2 - portHeight / 2 },
@@ -23516,7 +23514,6 @@
       { x: 0 - portWidth, y: nodeHeight / 2 - portHeight / 2 },
       { x: nodeWidth / 2 - portWidth / 2, y: 0 - portHeight }
     ];
-    console.log(nodeId);
     source.addElements([
       {
         parentId: "graph",
@@ -23524,7 +23521,10 @@
           type: "node",
           id: `node-${nodeId}`,
           cssClasses,
-          position: { x, y },
+          position: {
+            x,
+            y
+          },
           size: { width: nodeWidth, height: nodeHeight },
           children: [
             {
@@ -23533,31 +23533,6 @@
               text: name,
               position: { x: nodeWidth / 2, y: nodeHeight / 2 }
             }
-            // <SPort>{
-            //   type: "port",
-            //   id: `port-1`,
-            //   size: { width: portWidth, height: portHeight },
-            //   position: positionPortArr[0],
-            // },
-            // <SPort>{
-            //   type: "port",
-            //   id: `port-2`,
-            //   size: { width: portWidth, height: portHeight },
-            //   position: positionPortArr[1],
-            // },
-            // <SPort>{
-            //   type: "port",
-            //   id: `port-3`,
-            //   size: { width: portWidth, height: portHeight },
-            //   position: positionPortArr[2],
-            // },
-            // <SPort>{
-            //   type: "port",
-            //   id: `port-4`,
-            //   size: { width: portWidth, height: portHeight },
-            //   position: positionPortArr[3],
-            // },
-            // [...portArr],
           ]
         }
       }
@@ -23570,11 +23545,29 @@
             type: "port",
             id: `port-${nodeId}-${i + 1}`,
             size: { width: portWidth, height: portHeight },
-            position: positionPortArr[i]
+            position: positionPortArr[i],
+            cssClasses: ["port"]
           }
         }
       ]);
     }
+  }
+
+  // util/drawEdge.ts
+  function drawEdge(source, sourceNumb, targetNumb, cssClasses = []) {
+    source.addElements([
+      {
+        parentId: "graph",
+        element: {
+          type: "edge:straight",
+          id: `edge-between-node${sourceNumb}-to-node${targetNumb}`,
+          sourceId: `port-${sourceNumb}`,
+          targetId: `port-${targetNumb}`,
+          cssClasses,
+          routerKind: "manhattan"
+        }
+      }
+    ]);
   }
 
   // index.ts
@@ -23593,6 +23586,8 @@
     const defaultNodeHeight = 100;
     const defaultPortWidth = 20;
     const defaultPortHeight = 20;
+    const defaultDummyWidth = 10;
+    const defaultDummyHeight = 10;
     let dummyEdgeArray = [];
     let dummyNodeArray = [];
     let node1Number = 1;
@@ -23634,12 +23629,97 @@
       drawMode = false;
     }
     modelSource.setModel(graph);
+    const drawLogic = () => {
+      setTimeout(() => {
+        document.querySelectorAll(".port").forEach((port) => {
+          port.addEventListener("click", () => {
+            if (drawMode && !dummyMode) {
+              dummyMode = true;
+              port.classList.add("ready-draw");
+              const sourceId = port.id.replace("sprotty-container_port-", "");
+              const transformAttribute = port.parentElement.getAttribute("transform");
+              const coordinate = transformAttribute ? transformAttribute.replace("translate(", "").replace(")", "").trim().split(",") : [0, 0];
+              console.log(sourceId);
+              if (dummyMode) {
+                addNode(
+                  modelSource,
+                  "dummy",
+                  defaultDummyWidth,
+                  defaultDummyHeight,
+                  "dummy",
+                  4,
+                  2,
+                  2,
+                  ["nodes", "dummy"],
+                  "",
+                  Number(coordinate[0]) + 1.5 * defaultNodeWidth,
+                  Number(coordinate[1])
+                );
+                dummyNodeArray.push("node-dummy");
+                drawEdge(modelSource, sourceId, "dummy-3", ["dummy-edge"]);
+                dummyEdgeArray.push(`edge-between-node${sourceId}-to-nodedummy`);
+                setTimeout(() => {
+                  const dummyElement = document.getElementById(
+                    "sprotty-container_node-dummy"
+                  );
+                  dummyElement.addEventListener("mouseup", () => {
+                    const dummyCoordinate = dummyElement.getAttribute("transform").replace("translate(", "").replace(")", "").trim().split(",").map((e) => {
+                      return Number(e);
+                    });
+                    console.log("toa do dummy", dummyCoordinate);
+                    const nodeElements = document.querySelectorAll(".node");
+                    let nodeElementsArr = [];
+                    nodeElements.forEach((node) => {
+                      nodeElementsArr.push({
+                        id: node.id.replace("sprotty-container_node-", ""),
+                        coordinate: node.getAttribute("transform") ? node.getAttribute("transform").replace("translate(", "").replace(")", "").trim().split(",").map((e) => {
+                          return Number(e);
+                        }) : [0, 0]
+                      });
+                    });
+                    const filteredNode = nodeElementsArr.filter((node) => {
+                      return node.coordinate[0] <= dummyCoordinate[0] && dummyCoordinate[0] <= node.coordinate[0] + defaultNodeWidth && node.coordinate[1] <= dummyCoordinate[1] && dummyCoordinate[1] <= node.coordinate[1] + defaultNodeHeight;
+                    });
+                    console.log("node filter", filteredNode);
+                    const idPortArr = [];
+                    const portElements = document.querySelectorAll(".port");
+                    portElements.forEach((port2) => {
+                      idPortArr.push(
+                        port2.id.replace("sprotty-container_node-", "")
+                      );
+                    });
+                    const idPortArrFiltered = idPortArr.filter((id) => {
+                      return id.includes(filteredNode[0].id);
+                    });
+                    idPortArrFiltered.forEach((portId) => {
+                      const portSelected = document.getElementById(portId);
+                      portSelected.classList.add("ready-draw");
+                      portSelected.addEventListener("click", (event) => {
+                        console.log(event.target.id);
+                        drawEdge(
+                          modelSource,
+                          sourceId,
+                          event.target.id.replace(
+                            "sprotty-container_port-",
+                            ""
+                          )
+                        );
+                      });
+                    });
+                  });
+                }, 100);
+              } else {
+                return;
+              }
+            }
+          });
+        });
+      }, 100);
+    };
     addNode1Btn.addEventListener("click", () => {
-      let time = Date.now();
       addNode(
         modelSource,
-        node1Number,
-        // `type-1-${node1Number}`,
+        `type-1-${node1Number}`,
         defaultNodeWidth,
         defaultNodeHeight,
         label1Id,
@@ -23649,13 +23729,12 @@
       );
       node1Number++;
       label1Id++;
+      drawLogic();
     });
     addNode2Btn.addEventListener("click", () => {
-      let time = Date.now();
       addNode(
         modelSource,
-        node2Number,
-        // `type-2-${node2Number}`,
+        `type-2-${node2Number}`,
         defaultNodeWidth,
         defaultNodeHeight,
         label2Id,
@@ -23665,14 +23744,13 @@
       );
       node2Number++;
       label2Id++;
+      drawLogic();
     });
     addNode3Btn.addEventListener("click", () => {
-      let time = Date.now();
       console.log(graph.children);
       addNode(
         modelSource,
-        node3Number,
-        // `type-3-${node3Number}`,
+        `type-3-${node3Number}`,
         defaultNodeWidth,
         defaultNodeHeight,
         label3Id,
@@ -23682,13 +23760,12 @@
       );
       node3Number++;
       label3Id++;
+      drawLogic();
     });
     addNode4Btn.addEventListener("click", () => {
-      let time = Date.now();
       addNode(
         modelSource,
-        node4Number,
-        // `type-4-${node4Number}`,
+        `type-4-${node4Number}`,
         defaultNodeWidth,
         defaultNodeHeight,
         label4Id,
@@ -23698,6 +23775,7 @@
       );
       node4Number++;
       label4Id++;
+      drawLogic();
     });
     drawEdgeBtn.addEventListener("click", () => {
       if (drawMode === false) {
