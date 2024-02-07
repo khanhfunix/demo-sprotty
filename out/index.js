@@ -23590,6 +23590,7 @@
     const defaultDummyHeight = 10;
     let dummyEdgeArray = [];
     let dummyNodeArray = [];
+    let sourceId;
     let node1Number = 1;
     let node2Number = 1;
     let node3Number = 1;
@@ -23600,6 +23601,18 @@
     let label4Id = 1;
     let drawMode = false;
     let dummyMode = false;
+    console.log(modelSource);
+    const drawMainEdge = (event) => {
+      drawEdge(
+        modelSource,
+        sourceId,
+        event.target.parentElement.id.replace(
+          "sprotty-container_port-",
+          ""
+        )
+      );
+      cancelDrawMode();
+    };
     function cancelDrawMode() {
       dummyMode = false;
       addNode1Btn.removeAttribute("disabled");
@@ -23613,6 +23626,10 @@
       document.querySelectorAll(".sprotty-node").forEach((e) => {
         e.removeAttribute("style");
       });
+      document.querySelectorAll(".port").forEach((port) => {
+        port.removeEventListener("click", drawMainEdge);
+      });
+      console.log(dummyNodeArray);
       modelSource.removeElements([
         {
           elementId: dummyNodeArray[0],
@@ -23625,10 +23642,14 @@
           parentId: "graph"
         }
       ]);
+      console.log(modelSource);
       Array.from(document.getElementsByClassName("ready-draw")).forEach((e) => {
         e.classList.remove("ready-draw");
       });
+      dummyNodeArray = [];
       dummyEdgeArray = [];
+      console.log(dummyEdgeArray);
+      sourceId = "";
       drawMode = false;
     }
     modelSource.setModel(graph);
@@ -23637,87 +23658,75 @@
         document.querySelectorAll(".port").forEach((port) => {
           port.addEventListener("click", () => {
             if (drawMode && !dummyMode) {
+              console.log("click dummy");
               dummyMode = true;
               port.classList.add("ready-draw");
-              const sourceId = port.id.replace("sprotty-container_port-", "");
+              sourceId = port.id.replace("sprotty-container_port-", "");
               const transformAttribute = port.parentElement.getAttribute("transform");
               const coordinate = transformAttribute ? transformAttribute.replace("translate(", "").replace(")", "").trim().split(",") : [0, 0];
-              console.log(sourceId);
-              if (dummyMode) {
-                addNode(
-                  modelSource,
-                  "dummy",
-                  defaultDummyWidth,
-                  defaultDummyHeight,
-                  "dummy",
-                  4,
-                  2,
-                  2,
-                  ["nodes", "dummy"],
-                  "",
-                  Number(coordinate[0]) + 1.5 * defaultNodeWidth,
-                  Number(coordinate[1])
+              addNode(
+                modelSource,
+                "dummy",
+                defaultDummyWidth,
+                defaultDummyHeight,
+                "dummy",
+                1,
+                2,
+                2,
+                ["nodes", "dummy"],
+                "",
+                Number(coordinate[0]) + 1.5 * defaultNodeWidth,
+                Number(coordinate[1])
+              );
+              dummyNodeArray.push("node-dummy");
+              console.log("after push", modelSource);
+              console.log("source", sourceId);
+              drawEdge(modelSource, sourceId, "dummy-1", ["dummy-edge"]);
+              dummyEdgeArray.push(`edge-between-node${sourceId}-to-nodedummy-1`);
+              console.log(dummyEdgeArray);
+              dummyMode = false;
+            }
+            if (drawMode) {
+              setTimeout(() => {
+                const dummyElement = document.getElementById(
+                  "sprotty-container_node-dummy"
                 );
-                console.log(dummyEdgeArray);
-                dummyNodeArray.push("node-dummy");
-                drawEdge(modelSource, sourceId, "dummy-3", ["dummy-edge"]);
-                dummyEdgeArray.push(`edge-between-node${sourceId}-to-nodedummy`);
-                setTimeout(() => {
-                  const dummyElement = document.getElementById(
-                    "sprotty-container_node-dummy"
-                  );
-                  dummyElement.addEventListener("mouseup", () => {
-                    const dummyCoordinate = dummyElement.getAttribute("transform").replace("translate(", "").replace(")", "").trim().split(",").map((e) => {
-                      return Number(e);
-                    });
-                    console.log("toa do dummy", dummyCoordinate);
-                    const nodeElements = document.querySelectorAll(".node");
-                    let nodeElementsArr = [];
-                    nodeElements.forEach((node) => {
-                      nodeElementsArr.push({
-                        id: node.id.replace("sprotty-container_node-", ""),
-                        coordinate: node.getAttribute("transform") ? node.getAttribute("transform").replace("translate(", "").replace(")", "").trim().split(",").map((e) => {
-                          return Number(e);
-                        }) : [0, 0]
-                      });
-                    });
-                    const filteredNode = nodeElementsArr.filter((node) => {
-                      return node.coordinate[0] <= dummyCoordinate[0] && dummyCoordinate[0] <= node.coordinate[0] + defaultNodeWidth && node.coordinate[1] <= dummyCoordinate[1] && dummyCoordinate[1] <= node.coordinate[1] + defaultNodeHeight;
-                    });
-                    console.log("node filter", filteredNode);
-                    const idPortArr = [];
-                    const portElements = document.querySelectorAll(".port");
-                    portElements.forEach((port2) => {
-                      idPortArr.push(
-                        port2.id.replace("sprotty-container_node-", "")
-                      );
-                    });
-                    const idPortArrFiltered = idPortArr.filter((id) => {
-                      return id.includes(filteredNode[0].id);
-                    });
-                    idPortArrFiltered.forEach((portId) => {
-                      const portSelected = document.getElementById(portId);
-                      portSelected.classList.add("ready-draw");
-                      portSelected.addEventListener("click", (event) => {
-                        console.log(
-                          event.target.parentElement.id
-                        );
-                        drawEdge(
-                          modelSource,
-                          sourceId,
-                          event.target.parentElement.id.replace(
-                            "sprotty-container_port-",
-                            ""
-                          )
-                        );
-                        cancelDrawMode();
-                      });
+                dummyElement.addEventListener("mouseup", () => {
+                  const dummyCoordinate = dummyElement.getAttribute("transform").replace("translate(", "").replace(")", "").trim().split(",").map((e) => {
+                    return Number(e);
+                  });
+                  const nodeElements = document.querySelectorAll(".node");
+                  let nodeElementsArr = [];
+                  nodeElements.forEach((node) => {
+                    nodeElementsArr.push({
+                      id: node.id,
+                      coordinate: node.getAttribute("transform") ? node.getAttribute("transform").replace("translate(", "").replace(")", "").trim().split(",").map((e) => {
+                        return Number(e);
+                      }) : [0, 0]
                     });
                   });
-                }, 100);
-              } else {
-                return;
-              }
+                  const filteredNode = nodeElementsArr.filter((node) => {
+                    return node.coordinate[0] <= dummyCoordinate[0] && dummyCoordinate[0] <= node.coordinate[0] + defaultNodeWidth && node.coordinate[1] <= dummyCoordinate[1] && dummyCoordinate[1] <= node.coordinate[1] + defaultNodeHeight;
+                  });
+                  const idPortArr = [];
+                  const portElements = document.querySelectorAll(".port");
+                  portElements.forEach((port2) => {
+                    idPortArr.push(
+                      port2.id.replace("sprotty-container_node-", "")
+                    );
+                  });
+                  const idPortArrFiltered = idPortArr.filter((id) => {
+                    return id.includes(
+                      filteredNode[0].id.replace("sprotty-container_node-", "")
+                    );
+                  });
+                  idPortArrFiltered.forEach((portId) => {
+                    const portSelected = document.getElementById(portId);
+                    portSelected.classList.add("ready-draw");
+                    portSelected.addEventListener("click", drawMainEdge);
+                  });
+                });
+              }, 100);
             }
           });
         });
