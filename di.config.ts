@@ -1,4 +1,5 @@
 import { Container, ContainerModule } from "inversify";
+import { CustomMouseListener } from "./util/customEdge";
 
 import {
   configureModelElement,
@@ -26,6 +27,8 @@ import { PortViewWithExternalLabel } from "./view/portView";
 
 export const createContainer = (containerId: string) => {
   const myModule = new ContainerModule((bind, unbind, isBound, rebind) => {
+    bind(CustomMouseListener).toSelf().inSingletonScope();
+    bind(TYPES.MouseListener).toService(CustomMouseListener);
     bind(TYPES.ModelSource).to(LocalModelSource).inSingletonScope();
 
     const context = { bind, unbind, isBound, rebind };
