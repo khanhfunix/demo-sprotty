@@ -1,12 +1,31 @@
-// let drawMode: boolean = false;
-export let drawMode = false
+
 import "reflect-metadata";
-import { LocalModelSource, SModelElementImpl, SNodeImpl, TYPES } from "sprotty";
+import { LocalModelSource, TYPES } from "sprotty";
 import { createContainer } from "./di.config";
 import { graph } from "./model-source";
 
 import addNode from "./util/addNode";
 import drawEdge from "./util/drawEdge";
+
+
+
+
+
+
+// export class CustomMouseListener extends MouseListener {
+//   mouseUp(target: SModelElementImpl, event: MouseEvent): (Action | Promise<Action>)[] {
+//     if (target instanceof SRoutingHandleImpl) {
+//       if (!(target.parent as SEdgeImpl).targetId.includes("dummy")) {
+      
+//         setTimeout(() => {
+//           cancelDrawMode()
+//         }, 100)
+//       }
+//     }
+//     return [];
+//   }
+
+// }
 
 let addNode1Btn
 let addNode2Btn
@@ -42,12 +61,16 @@ let label1Id: any = 1;
 let label2Id: any = 1;
 let label3Id: any = 1;
 let label4Id: any = 1;
+
+
+let drawMode: boolean = false
 let dummyMode: boolean = false;
 
 
 
 function cancelDrawMode() {
-  dummyMode = false;
+
+
   addNode1Btn.removeAttribute("disabled");
   addNode2Btn.removeAttribute("disabled");
   addNode3Btn.removeAttribute("disabled");
@@ -59,7 +82,10 @@ function cancelDrawMode() {
   document.querySelectorAll(".sprotty-node").forEach((e) => {
     (e as HTMLElement).removeAttribute("style");
   });
-  console.log(dummyNodeArray)
+
+  document.querySelectorAll(".sprotty-edge").forEach((e)=>{
+    (e as HTMLElement).classList.remove("selected");
+  })
 
   modelSource.removeElements([
     {
@@ -73,7 +99,7 @@ function cancelDrawMode() {
   //     parentId: "graph",
   //   },
   // ]);
-  console.log(modelSource);
+  
   Array.from(document.getElementsByClassName("ready-draw")).forEach((e) => {
     e.classList.remove("ready-draw");
   });
@@ -81,7 +107,11 @@ function cancelDrawMode() {
 
   sourceId = "";
   drawMode = false;
+  dummyMode = false;
 }
+
+
+
 
 export default function run() {
   modelSource.setModel(graph);
@@ -96,6 +126,8 @@ export default function run() {
 
   cancelBtn.addEventListener("click", () => {
     if (drawMode === true) {
+      // drawMode = false;
+      console.log('click')
       cancelDrawMode();
     }
   });
@@ -134,17 +166,18 @@ export default function run() {
                 Number(coordinate[0]) + 2 * defaultNodeWidth,
                 Number(coordinate[1])
               );
-        
+
               dummyNodeArray.push("node-dummy");
               drawEdge(modelSource, edgeNumber, sourceId, "dummy-1", [
                 "dummy-edge",
               ]);
               edgeNumber++;
               dummyMode = false;
+              console.log(modelSource)
             }
 
 
-           
+
             // dummyEdgeArray.push(`edge-between-node${sourceId}-to-nodedummy-1`);
 
           }
