@@ -16,7 +16,7 @@ import drawEdge from "./util/drawEdge";
 //   mouseUp(target: SModelElementImpl, event: MouseEvent): (Action | Promise<Action>)[] {
 //     if (target instanceof SRoutingHandleImpl) {
 //       if (!(target.parent as SEdgeImpl).targetId.includes("dummy")) {
-      
+
 //         setTimeout(() => {
 //           cancelDrawMode()
 //         }, 100)
@@ -83,7 +83,7 @@ function cancelDrawMode() {
     (e as HTMLElement).removeAttribute("style");
   });
 
-  document.querySelectorAll(".sprotty-edge").forEach((e)=>{
+  document.querySelectorAll(".sprotty-edge").forEach((e) => {
     (e as HTMLElement).classList.remove("selected");
   })
 
@@ -93,13 +93,38 @@ function cancelDrawMode() {
       parentId: "graph",
     },
   ]);
+  // if(modelSource.c)
   // modelSource.removeElements([
   //   {
   //     elementId: dummyEdgeArray[0],
   //     parentId: "graph",
   //   },
   // ]);
-  
+  const coordinateCircleArr = []
+  const cirlceEl = document.querySelectorAll(".sprotty-routing-handle");
+  cirlceEl.forEach(e => {
+    coordinateCircleArr.push({
+      x: e.getAttribute("cx"),
+      y: e.getAttribute("cy")
+    })
+  });
+
+  const dummyNodeEl = document.getElementById("sprotty-container_node-dummy");
+  const dummyCoordinate = dummyNodeEl.getAttribute("transform")
+    .replace("translate(", "")
+    .replace(")", "")
+    .trim()
+    .split(",")
+    .map((e) => {
+      return Number(e);
+    });
+  console.log(coordinateCircleArr);
+  console.log(dummyCoordinate)
+  coordinateCircleArr.forEach(e => {
+    console.log( Math.sqrt(Math.pow(Number(dummyCoordinate[1]) - Number(e.x), 2) + Math.pow(Number(dummyCoordinate[1]) - Number(e.y), 2)) )
+    // console.log(Math.sqrt(Math.pow(Number(dummyCoordinate[1]) - Number(e.x), 2) - Math.pow(Number(dummyCoordinate[2]) - Number(e.y), 2)))
+    if (Math.sqrt(Math.pow(Number(dummyCoordinate[1]) - Number(e.x), 2) + Math.pow(Number(dummyCoordinate[2]) - Number(e.y), 2))) { }
+  })
   Array.from(document.getElementsByClassName("ready-draw")).forEach((e) => {
     e.classList.remove("ready-draw");
   });
@@ -171,9 +196,10 @@ export default function run() {
               drawEdge(modelSource, edgeNumber, sourceId, "dummy-1", [
                 "dummy-edge",
               ]);
+              // document.querySelector(`sprotty-container_edge-${edgeNumber}`).classList.add('selected')
               edgeNumber++;
               dummyMode = false;
-              console.log(modelSource)
+
             }
 
 
