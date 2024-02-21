@@ -82,60 +82,65 @@ function cancelDrawMode() {
       parentId: "graph",
     },
   ]);
-
-  const coordinateCircleArr = [];
-  const cirlceEl = document.querySelectorAll(".sprotty-routing-handle");
-  cirlceEl.forEach((e) => {
-    coordinateCircleArr.push({
-      x: e.getAttribute("cx"),
-      y: e.getAttribute("cy"),
+  if (dummyMode) {
+    const coordinateCircleArr = [];
+    const cirlceEl = document.querySelectorAll(".sprotty-routing-handle");
+    cirlceEl.forEach((e) => {
+      coordinateCircleArr.push({
+        x: e.getAttribute("cx"),
+        y: e.getAttribute("cy"),
+      });
     });
-  });
 
-  const dummyNodeEl = document.getElementById("sprotty-container_node-dummy");
-  const dummyCoordinate = dummyNodeEl
-    .getAttribute("transform")
-    .replace("translate(", "")
-    .replace(")", "")
-    .trim()
-    .split(",")
-    .map((e) => {
-      return Number(e);
-    });
-  if (coordinateCircleArr.length === 0) {
-    modelSource.removeElements([
-      {
-        elementId: edgeIdArray[edgeIdArray.length - 1],
-        parentId: "graph",
-      },
-    ]);
-    edgeIdArray = [];
-  } else {
-    if (
-      Math.sqrt(
-        Math.pow(
-          Number(
-            dummyCoordinate[0] -
-              Number(coordinateCircleArr[coordinateCircleArr.length - 1].x)
-          ),
-          2
-        ) +
-          Math.pow(
-            Number(
-              dummyCoordinate[1] -
-                Number(coordinateCircleArr[coordinateCircleArr.length - 1].y)
-            ),
-            2
-          )
-      ) < 7
-    ) {
-      modelSource.removeElements([
-        {
-          elementId: edgeIdArray[edgeIdArray.length - 1],
-          parentId: "graph",
-        },
-      ]);
-      edgeIdArray = [];
+    const dummyNodeEl = document.getElementById("sprotty-container_node-dummy");
+    if (dummyNodeEl) {
+      const dummyCoordinate = dummyNodeEl
+        .getAttribute("transform")
+        .replace("translate(", "")
+        .replace(")", "")
+        .trim()
+        .split(",")
+        .map((e) => {
+          return Number(e);
+        });
+      if (coordinateCircleArr.length === 0) {
+        modelSource.removeElements([
+          {
+            elementId: edgeIdArray[edgeIdArray.length - 1],
+            parentId: "graph",
+          },
+        ]);
+        edgeIdArray = [];
+      } else {
+        if (
+          Math.sqrt(
+            Math.pow(
+              Number(
+                dummyCoordinate[0] -
+                  Number(coordinateCircleArr[coordinateCircleArr.length - 1].x)
+              ),
+              2
+            ) +
+              Math.pow(
+                Number(
+                  dummyCoordinate[1] -
+                    Number(
+                      coordinateCircleArr[coordinateCircleArr.length - 1].y
+                    )
+                ),
+                2
+              )
+          ) < 7
+        ) {
+          modelSource.removeElements([
+            {
+              elementId: edgeIdArray[edgeIdArray.length - 1],
+              parentId: "graph",
+            },
+          ]);
+          edgeIdArray = [];
+        }
+      }
     }
   }
 
@@ -148,8 +153,6 @@ function cancelDrawMode() {
   sourceId = "";
   drawMode = false;
   dummyMode = false;
-
-  console.log(modelSource);
 }
 
 export default function run() {
@@ -165,8 +168,6 @@ export default function run() {
 
   cancelBtn.addEventListener("click", () => {
     if (drawMode === true) {
-      // drawMode = false;
-
       cancelDrawMode();
     }
   });
@@ -213,7 +214,6 @@ export default function run() {
               edgeIdArray.push(`edge-${edgeNumber}`);
               edgeNumber++;
               dummyMode = false;
-              console.log(graph.children);
             }
           }
         });
