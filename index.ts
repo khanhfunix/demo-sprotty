@@ -1,4 +1,3 @@
-
 import "reflect-metadata";
 import { LocalModelSource, TYPES } from "sprotty";
 import { createContainer } from "./di.config";
@@ -6,11 +5,6 @@ import { graph } from "./model-source";
 
 import addNode from "./util/addNode";
 import drawEdge from "./util/drawEdge";
-
-
-
-
-
 
 // export class CustomMouseListener extends MouseListener {
 //   mouseUp(target: SModelElementImpl, event: MouseEvent): (Action | Promise<Action>)[] {
@@ -27,13 +21,13 @@ import drawEdge from "./util/drawEdge";
 
 // }
 
-let addNode1Btn
-let addNode2Btn
-let addNode3Btn
-let addNode4Btn
-let drawEdgeBtn
-let deleteBtn
-let cancelBtn
+let addNode1Btn;
+let addNode2Btn;
+let addNode3Btn;
+let addNode4Btn;
+let drawEdgeBtn;
+let deleteBtn;
+let cancelBtn;
 
 const container = createContainer("sprotty-container");
 const modelSource = container.get<LocalModelSource>(TYPES.ModelSource);
@@ -62,15 +56,10 @@ let label2Id: any = 1;
 let label3Id: any = 1;
 let label4Id: any = 1;
 
-
-let drawMode: boolean = false
+let drawMode: boolean = false;
 let dummyMode: boolean = false;
 
-
-
 function cancelDrawMode() {
-
-
   addNode1Btn.removeAttribute("disabled");
   addNode2Btn.removeAttribute("disabled");
   addNode3Btn.removeAttribute("disabled");
@@ -85,7 +74,7 @@ function cancelDrawMode() {
 
   document.querySelectorAll(".sprotty-edge").forEach((e) => {
     (e as HTMLElement).classList.remove("selected");
-  })
+  });
 
   modelSource.removeElements([
     {
@@ -93,19 +82,19 @@ function cancelDrawMode() {
       parentId: "graph",
     },
   ]);
- 
-  const coordinateCircleArr = []
+
+  const coordinateCircleArr = [];
   const cirlceEl = document.querySelectorAll(".sprotty-routing-handle");
-  cirlceEl.forEach(e => {
+  cirlceEl.forEach((e) => {
     coordinateCircleArr.push({
       x: e.getAttribute("cx"),
-      y: e.getAttribute("cy")
-    })
+      y: e.getAttribute("cy"),
+    });
   });
 
-
   const dummyNodeEl = document.getElementById("sprotty-container_node-dummy");
-  const dummyCoordinate = dummyNodeEl.getAttribute("transform")
+  const dummyCoordinate = dummyNodeEl
+    .getAttribute("transform")
     .replace("translate(", "")
     .replace(")", "")
     .trim()
@@ -113,18 +102,42 @@ function cancelDrawMode() {
     .map((e) => {
       return Number(e);
     });
- 
-
-  if (Math.sqrt(Math.pow(Number(dummyCoordinate[0] - Number(coordinateCircleArr[coordinateCircleArr.length - 1].x)), 2) + Math.pow(Number(dummyCoordinate[1] - Number(coordinateCircleArr[coordinateCircleArr.length - 1].y)), 2)) < 7) {
-    console.log(edgeIdArray[edgeIdArray.length-1])
-    modelSource.removeElements([{
-      elementId: edgeIdArray[ edgeIdArray.length-1],
-      parentId : "graph"
-    }])
+  if (coordinateCircleArr.length === 0) {
+    modelSource.removeElements([
+      {
+        elementId: edgeIdArray[edgeIdArray.length - 1],
+        parentId: "graph",
+      },
+    ]);
     edgeIdArray.pop();
-   }else{
-    console.log(false)
-   }
+  } else {
+    if (
+      Math.sqrt(
+        Math.pow(
+          Number(
+            dummyCoordinate[0] -
+              Number(coordinateCircleArr[coordinateCircleArr.length - 1].x)
+          ),
+          2
+        ) +
+          Math.pow(
+            Number(
+              dummyCoordinate[1] -
+                Number(coordinateCircleArr[coordinateCircleArr.length - 1].y)
+            ),
+            2
+          )
+      ) < 7
+    ) {
+      modelSource.removeElements([
+        {
+          elementId: edgeIdArray[edgeIdArray.length - 1],
+          parentId: "graph",
+        },
+      ]);
+      edgeIdArray.pop();
+    }
+  }
 
   Array.from(document.getElementsByClassName("ready-draw")).forEach((e) => {
     e.classList.remove("ready-draw");
@@ -137,9 +150,6 @@ function cancelDrawMode() {
   dummyMode = false;
 }
 
-
-
-
 export default function run() {
   modelSource.setModel(graph);
 
@@ -150,7 +160,6 @@ export default function run() {
   drawEdgeBtn = document.getElementById("draw-edge");
   deleteBtn = document.getElementById("delete");
   cancelBtn = document.getElementById("cancel");
-  
 
   cancelBtn.addEventListener("click", () => {
     if (drawMode === true) {
@@ -174,10 +183,10 @@ export default function run() {
               port.parentElement.getAttribute("transform");
             const coordinate = transformAttribute
               ? transformAttribute
-                .replace("translate(", "")
-                .replace(")", "")
-                .trim()
-                .split(",")
+                  .replace("translate(", "")
+                  .replace(")", "")
+                  .trim()
+                  .split(",")
               : [0, 0];
             if (dummyNodeArray.length === 0) {
               addNode(
@@ -199,7 +208,7 @@ export default function run() {
               drawEdge(modelSource, edgeNumber, sourceId, "dummy-1", [
                 "dummy-edge",
               ]);
-              edgeIdArray.push(`edge-${edgeNumber}`)
+              edgeIdArray.push(`edge-${edgeNumber}`);
               edgeNumber++;
               dummyMode = false;
             }
@@ -287,15 +296,13 @@ export default function run() {
       deleteBtn.setAttribute("disabled", "");
       cancelBtn.classList.remove("hide");
       drawMode = true;
-
     } else {
       cancelDrawMode();
     }
   });
   // delete mode
   deleteBtn.addEventListener("click", () => {
-
-    const selectedElements = document.querySelectorAll(".selected")
+    const selectedElements = document.querySelectorAll(".selected");
     selectedElements.forEach((element) => {
       modelSource.removeElements([
         {
