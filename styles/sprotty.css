@@ -3,6 +3,10 @@
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+.sprotty-graph {
+  border: #000 solid 5px;
+}
+
 .sprotty-hidden {
   display: block;
   position: absolute;

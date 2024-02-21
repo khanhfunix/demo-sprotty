@@ -109,7 +109,7 @@ function cancelDrawMode() {
         parentId: "graph",
       },
     ]);
-    edgeIdArray.pop();
+    edgeIdArray = [];
   } else {
     if (
       Math.sqrt(
@@ -135,7 +135,7 @@ function cancelDrawMode() {
           parentId: "graph",
         },
       ]);
-      edgeIdArray.pop();
+      edgeIdArray = [];
     }
   }
 
@@ -148,6 +148,8 @@ function cancelDrawMode() {
   sourceId = "";
   drawMode = false;
   dummyMode = false;
+
+  console.log(modelSource);
 }
 
 export default function run() {
@@ -211,6 +213,7 @@ export default function run() {
               edgeIdArray.push(`edge-${edgeNumber}`);
               edgeNumber++;
               dummyMode = false;
+              console.log(graph.children);
             }
           }
         });
