@@ -6,21 +6,6 @@ import { graph } from "./model-source";
 import addNode from "./util/addNode";
 import drawEdge from "./util/drawEdge";
 
-// export class CustomMouseListener extends MouseListener {
-//   mouseUp(target: SModelElementImpl, event: MouseEvent): (Action | Promise<Action>)[] {
-//     if (target instanceof SRoutingHandleImpl) {
-//       if (!(target.parent as SEdgeImpl).targetId.includes("dummy")) {
-
-//         setTimeout(() => {
-//           cancelDrawMode()
-//         }, 100)
-//       }
-//     }
-//     return [];
-//   }
-
-// }
-
 let addNode1Btn;
 let addNode2Btn;
 let addNode3Btn;
@@ -82,28 +67,54 @@ function cancelDrawMode() {
       parentId: "graph",
     },
   ]);
-  if (dummyMode) {
-    const coordinateCircleArr = [];
-    const cirlceEl = document.querySelectorAll(".sprotty-routing-handle");
-    cirlceEl.forEach((e) => {
-      coordinateCircleArr.push({
-        x: e.getAttribute("cx"),
-        y: e.getAttribute("cy"),
-      });
-    });
 
-    const dummyNodeEl = document.getElementById("sprotty-container_node-dummy");
-    if (dummyNodeEl) {
-      const dummyCoordinate = dummyNodeEl
-        .getAttribute("transform")
-        .replace("translate(", "")
-        .replace(")", "")
-        .trim()
-        .split(",")
-        .map((e) => {
-          return Number(e);
-        });
-      if (coordinateCircleArr.length === 0) {
+  const coordinateCircleArr = [];
+  const cirlceEl = document.querySelectorAll(".sprotty-routing-handle");
+  cirlceEl.forEach((e) => {
+    coordinateCircleArr.push({
+      x: e.getAttribute("cx"),
+      y: e.getAttribute("cy"),
+    });
+  });
+
+  const dummyNodeEl = document.getElementById("sprotty-container_node-dummy");
+  if (dummyNodeEl) {
+    const dummyCoordinate = dummyNodeEl
+      .getAttribute("transform")
+      .replace("translate(", "")
+      .replace(")", "")
+      .trim()
+      .split(",")
+      .map((e) => {
+        return Number(e);
+      });
+    if (coordinateCircleArr.length === 0) {
+      modelSource.removeElements([
+        {
+          elementId: edgeIdArray[edgeIdArray.length - 1],
+          parentId: "graph",
+        },
+      ]);
+      edgeIdArray = [];
+    } else {
+      if (
+        Math.sqrt(
+          Math.pow(
+            Number(
+              dummyCoordinate[0] -
+                Number(coordinateCircleArr[coordinateCircleArr.length - 1].x)
+            ),
+            2
+          ) +
+            Math.pow(
+              Number(
+                dummyCoordinate[1] -
+                  Number(coordinateCircleArr[coordinateCircleArr.length - 1].y)
+              ),
+              2
+            )
+        ) < 7
+      ) {
         modelSource.removeElements([
           {
             elementId: edgeIdArray[edgeIdArray.length - 1],
@@ -111,48 +122,26 @@ function cancelDrawMode() {
           },
         ]);
         edgeIdArray = [];
-      } else {
-        if (
-          Math.sqrt(
-            Math.pow(
-              Number(
-                dummyCoordinate[0] -
-                  Number(coordinateCircleArr[coordinateCircleArr.length - 1].x)
-              ),
-              2
-            ) +
-              Math.pow(
-                Number(
-                  dummyCoordinate[1] -
-                    Number(
-                      coordinateCircleArr[coordinateCircleArr.length - 1].y
-                    )
-                ),
-                2
-              )
-          ) < 7
-        ) {
-          modelSource.removeElements([
-            {
-              elementId: edgeIdArray[edgeIdArray.length - 1],
-              parentId: "graph",
-            },
-          ]);
-          edgeIdArray = [];
-        }
       }
     }
   }
+  // else {
+  //   modelSource.removeElements([
+  //     {
+  //       elementId: edgeIdArray[edgeIdArray.length - 1],
+  //       parentId: "graph",
+  //     },
+  //   ]);
+  //   edgeIdArray = [];
+  // }
 
   Array.from(document.getElementsByClassName("ready-draw")).forEach((e) => {
     e.classList.remove("ready-draw");
   });
 
   dummyNodeArray = [];
-
   sourceId = "";
   drawMode = false;
-  dummyMode = false;
 }
 
 export default function run() {
@@ -176,10 +165,9 @@ export default function run() {
     setTimeout(() => {
       document.querySelectorAll(".port").forEach((port) => {
         port.addEventListener("click", () => {
-          if (drawMode && !dummyMode) {
+          if (drawMode) {
             // TAO DUMMY
 
-            dummyMode = true;
             port.classList.add("ready-draw");
             sourceId = port.id.replace("sprotty-container_port-", "");
             const transformAttribute =
@@ -213,7 +201,6 @@ export default function run() {
               ]);
               edgeIdArray.push(`edge-${edgeNumber}`);
               edgeNumber++;
-              dummyMode = false;
             }
           }
         });
