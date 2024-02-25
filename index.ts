@@ -6,6 +6,14 @@ import { graph } from "./model-source";
 import addNode from "./util/addNode";
 import drawEdge from "./util/drawEdge";
 
+import {
+  MouseListener,
+  SEdgeImpl,
+  SModelElementImpl,
+  SRoutingHandleImpl,
+} from "sprotty";
+import { Action } from "sprotty-protocol";
+
 let addNode1Btn;
 let addNode2Btn;
 let addNode3Btn;
@@ -14,9 +22,6 @@ let drawEdgeBtn;
 let deleteBtn;
 let cancelBtn;
 
-const container = createContainer("sprotty-container");
-const modelSource = container.get<LocalModelSource>(TYPES.ModelSource);
-
 const defaultNodeWidth: number = 100;
 const defaultNodeHeight: number = 100;
 const defaultPortWidth: number = 20;
@@ -24,7 +29,7 @@ const defaultPortHeight: number = 20;
 const defaultDummyWidth: number = 1;
 const defaultDummyHeight: number = 1;
 
-let edgeIdArray = [];
+let edgeArr = [];
 let dummyNodeArray = [];
 
 let sourceId: any;
@@ -43,6 +48,33 @@ let label4Id: any = 1;
 
 let drawMode: boolean = false;
 let dummyMode: boolean = false;
+
+export class CustomMouseListener extends MouseListener {
+  mouseUp(
+    target: SModelElementImpl,
+    event: MouseEvent
+  ): (Action | Promise<Action>)[] {
+    if (target instanceof SRoutingHandleImpl) {
+      const targetParentEl = target.parent as SEdgeImpl;
+      if (!targetParentEl.targetId.includes("dummy")) {
+        setTimeout(() => {
+          document.getElementById("cancel").click();
+          const indexEdge = edgeArr.findIndex((edge) => {
+            return edge.id === targetParentEl.id;
+          });
+          if (indexEdge !== -1) {
+            edgeArr[indexEdge].sourceId = targetParentEl.sourceId;
+            edgeArr[indexEdge].targetId = targetParentEl.targetId;
+          }
+        }, 100);
+      }
+    }
+    return [];
+  }
+}
+
+const container = createContainer("sprotty-container");
+const modelSource = container.get<LocalModelSource>(TYPES.ModelSource);
 
 function cancelDrawMode() {
   addNode1Btn.removeAttribute("disabled");
@@ -91,11 +123,11 @@ function cancelDrawMode() {
     if (coordinateCircleArr.length === 0) {
       modelSource.removeElements([
         {
-          elementId: edgeIdArray[edgeIdArray.length - 1],
+          elementId: edgeArr[edgeArr.length - 1].id,
           parentId: "graph",
         },
       ]);
-      edgeIdArray = [];
+      edgeArr.pop();
     } else {
       if (
         Math.sqrt(
@@ -117,23 +149,14 @@ function cancelDrawMode() {
       ) {
         modelSource.removeElements([
           {
-            elementId: edgeIdArray[edgeIdArray.length - 1],
+            elementId: edgeArr[edgeArr.length - 1].id,
             parentId: "graph",
           },
         ]);
-        edgeIdArray = [];
+        edgeArr.pop();
       }
     }
   }
-  // else {
-  //   modelSource.removeElements([
-  //     {
-  //       elementId: edgeIdArray[edgeIdArray.length - 1],
-  //       parentId: "graph",
-  //     },
-  //   ]);
-  //   edgeIdArray = [];
-  // }
 
   Array.from(document.getElementsByClassName("ready-draw")).forEach((e) => {
     e.classList.remove("ready-draw");
@@ -167,7 +190,6 @@ export default function run() {
         port.addEventListener("click", () => {
           if (drawMode) {
             // TAO DUMMY
-
             port.classList.add("ready-draw");
             sourceId = port.id.replace("sprotty-container_port-", "");
             const transformAttribute =
@@ -199,7 +221,15 @@ export default function run() {
               drawEdge(modelSource, edgeNumber, sourceId, "dummy-1", [
                 "dummy-edge",
               ]);
-              edgeIdArray.push(`edge-${edgeNumber}`);
+              console.log(
+                document.getElementById(`sprotty-container_edge-${edgeNumber}`)
+              );
+              setTimeout(() => {}, 100);
+              edgeArr.push({
+                id: `edge-${edgeNumber}`,
+                sourceId: `port-${sourceId}`,
+                targetId: "dummy-1",
+              });
               edgeNumber++;
             }
           }
@@ -243,10 +273,8 @@ export default function run() {
     drawLogic();
   });
   addNode3Btn.addEventListener("click", () => {
-    console.log(graph.children);
     addNode(
       modelSource,
-
       `type-3-${node3Number}`,
       defaultNodeWidth,
       defaultNodeHeight,
@@ -294,14 +322,39 @@ export default function run() {
   deleteBtn.addEventListener("click", () => {
     const selectedElements = document.querySelectorAll(".selected");
     selectedElements.forEach((element) => {
+      if (element.id.includes("label") || element.id === "") {
+        return;
+      }
       modelSource.removeElements([
         {
           parentId: "graph",
           elementId: element.id.replace("sprotty-container_", ""),
         },
       ]);
+      const idNodeCompare = element.id.replace(
+        "sprotty-container_node-type-",
+        ""
+      );
+      edgeArr.forEach((edge) => {
+        const edgeSourceIdCompare = edge.sourceId.replace("port-type-", "");
+        const edgeTargetIdCompare = edge.targetId.replace("port-type-", "");
+        if (
+          edgeSourceIdCompare.includes(idNodeCompare) ||
+          edgeTargetIdCompare.includes(idNodeCompare)
+        ) {
+          modelSource.removeElements([
+            {
+              parentId: "graph",
+              elementId: edge.id,
+            },
+          ]);
+          const edgeIndex = edgeArr.findIndex((e) => {
+            return e.id === edge.id;
+          });
+          edgeArr.splice(edgeIndex, 1);
+        }
+      });
     });
   });
-  // cancel btn
 }
 document.addEventListener("DOMContentLoaded", () => run());

@@ -1,5 +1,5 @@
 import { Container, ContainerModule } from "inversify";
-import { CustomMouseListener } from "./util/customEdge";
+import { CustomMouseListener } from "./index";
 
 import {
   configureModelElement,
