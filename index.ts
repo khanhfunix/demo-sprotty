@@ -47,7 +47,6 @@ let label3Id: any = 1;
 let label4Id: any = 1;
 
 let drawMode: boolean = false;
-let dummyMode: boolean = false;
 
 export class CustomMouseListener extends MouseListener {
   mouseUp(
@@ -161,7 +160,6 @@ function cancelDrawMode() {
   Array.from(document.getElementsByClassName("ready-draw")).forEach((e) => {
     e.classList.remove("ready-draw");
   });
-
   dummyNodeArray = [];
   sourceId = "";
   drawMode = false;
@@ -221,10 +219,7 @@ export default function run() {
               drawEdge(modelSource, edgeNumber, sourceId, "dummy-1", [
                 "dummy-edge",
               ]);
-              console.log(
-                document.getElementById(`sprotty-container_edge-${edgeNumber}`)
-              );
-              setTimeout(() => {}, 100);
+
               edgeArr.push({
                 id: `edge-${edgeNumber}`,
                 sourceId: `port-${sourceId}`,
@@ -236,6 +231,48 @@ export default function run() {
         });
       });
     }, 100);
+  };
+
+  const deleteLogic = () => {
+    const selectedElements = document.querySelectorAll(".selected");
+    selectedElements.forEach((element) => {
+      if (element.id.includes("label") || element.id === "") {
+        return;
+      }
+
+      const idNodeCompare = element.id.replace(
+        "sprotty-container_node-type-",
+        ""
+      );
+      edgeArr.forEach((edge) => {
+        const edgeSourceIdCompare = edge.sourceId.replace("port-type-", "");
+        const edgeTargetIdCompare = edge.targetId.replace("port-type-", "");
+        setTimeout(() => {
+          if (
+            edgeSourceIdCompare.includes(idNodeCompare) ||
+            edgeTargetIdCompare.includes(idNodeCompare)
+          ) {
+            modelSource.removeElements([
+              {
+                parentId: "graph",
+                elementId: edge.id,
+              },
+            ]);
+
+            const edgeIndex = edgeArr.findIndex((e) => {
+              return e.id === edge.id;
+            });
+            edgeArr.splice(edgeIndex, 1);
+          }
+        }, 100);
+      });
+      modelSource.removeElements([
+        {
+          parentId: "graph",
+          elementId: element.id.replace("sprotty-container_", ""),
+        },
+      ]);
+    });
   };
 
   // add node
@@ -320,41 +357,12 @@ export default function run() {
   });
   // delete mode
   deleteBtn.addEventListener("click", () => {
-    const selectedElements = document.querySelectorAll(".selected");
-    selectedElements.forEach((element) => {
-      if (element.id.includes("label") || element.id === "") {
-        return;
-      }
-      modelSource.removeElements([
-        {
-          parentId: "graph",
-          elementId: element.id.replace("sprotty-container_", ""),
-        },
-      ]);
-      const idNodeCompare = element.id.replace(
-        "sprotty-container_node-type-",
-        ""
-      );
-      edgeArr.forEach((edge) => {
-        const edgeSourceIdCompare = edge.sourceId.replace("port-type-", "");
-        const edgeTargetIdCompare = edge.targetId.replace("port-type-", "");
-        if (
-          edgeSourceIdCompare.includes(idNodeCompare) ||
-          edgeTargetIdCompare.includes(idNodeCompare)
-        ) {
-          modelSource.removeElements([
-            {
-              parentId: "graph",
-              elementId: edge.id,
-            },
-          ]);
-          const edgeIndex = edgeArr.findIndex((e) => {
-            return e.id === edge.id;
-          });
-          edgeArr.splice(edgeIndex, 1);
-        }
-      });
-    });
+    deleteLogic();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Delete" && !drawMode) {
+      deleteLogic();
+    }
   });
 }
 document.addEventListener("DOMContentLoaded", () => run());
